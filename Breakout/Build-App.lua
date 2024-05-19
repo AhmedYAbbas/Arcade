@@ -1,5 +1,5 @@
-project "Core"
-    kind "StaticLib"
+project "Breakout"
+    kind "ConsoleApp"
     language "C++"
     cppdialect "C++20"
     targetdir "Binaries/%{cfg.buildcfg}"
@@ -9,19 +9,20 @@ project "Core"
 
     includedirs
     {
-      "Source",
-      "%{IncludeDir.SDL2}/include"
+        "Source",
+
+        -- Include Core
+        "../Core/Source"
     }
 
-    libdirs
+    links
     {
-        "%{IncludeDir.SDL2}/lib/x64"
+        "Core"
     }
 
-    links 
+    postbuildcommands
     {
-        "SDL2",
-        "SDL2main"
+        "{COPY} ../Core/Vendor/SDL2/lib/x64/SDL2.dll ../Binaries/" .. OutputDir .. "/%{prj.name}"
     }
 
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
@@ -29,7 +30,7 @@ project "Core"
 
     filter "system:windows"
         systemversion "latest"
-        defines { }
+        defines { "WINDOWS" }
 
     filter "configurations:Debug"
         defines { "DEBUG" }

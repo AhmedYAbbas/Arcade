@@ -1,0 +1,3 @@
+[submodule "Core/Vendor"]
+	path = Core/Vendor
+	url = https://github.com/libsdl-org/SDL

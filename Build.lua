@@ -1,8 +1,7 @@
--- premake5.lua
-workspace "New Project"
+workspace "Arcade"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
-   startproject "App"
+   startproject "Breakout"
 
    -- Workspace-wide build options for MSVC
    filter "system:windows"
@@ -10,8 +9,12 @@ workspace "New Project"
 
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
+-- Include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["SDL2"] = "%{wks.location}/Core/Vendor/SDL2"
+
 group "Core"
 	include "Core/Build-Core.lua"
 group ""
 
-include "App/Build-App.lua"
+include "Breakout/Build-App.lua"
