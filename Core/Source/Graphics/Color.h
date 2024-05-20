@@ -10,6 +10,7 @@ namespace Core
 	{
 	public:
 		static void InitColorFormat(const SDL_PixelFormat* format);
+		static Color EvaluateOneMinusSourceAlpha(const Color& source, const Color& destination);
 
 		static Color Black() 	{ return {0, 0, 0, 255}; }
 		static Color White() 	{ return {255, 255, 255, 255}; }

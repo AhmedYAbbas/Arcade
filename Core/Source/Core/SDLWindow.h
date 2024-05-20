@@ -11,6 +11,9 @@ namespace Core
 {
 	class Vec2D;
 	class Line;
+	class Triangle;
+	class Rectangle;
+	class Circle;
 
 	class SDLWindow : public Window
 	{
@@ -29,6 +32,9 @@ namespace Core
 		void Draw(int x, int y, const Color& color);
 		void Draw(const Vec2D& point, const Color& color);
 		void Draw(const Line& line, const Color& color);
+		void Draw(const Triangle& triangle, const Color& color, bool fill = false, const Color& fillColor = Color::White());
+		void Draw(const Rectangle& rect, const Color& color, bool fill = false, const Color& fillColor = Color::White());
+		void Draw(const Circle& circle, const Color& color, bool fill = false, const Color& fillColor = Color::White());
 
 	private:
 		void Init(const WindowProps& props);

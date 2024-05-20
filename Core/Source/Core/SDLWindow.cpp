@@ -1,7 +1,11 @@
 #include <iostream>
 #include <assert.h>
+#include <algorithm>
 
 #include "Shapes/Line.h"
+#include "Shapes/Triangle.h"
+#include "Shapes/Rectangle.h"
+#include "Shapes/Circle.h"
 #include "SDLWindow.h"
 
 namespace Core
@@ -37,7 +41,15 @@ namespace Core
 			}
 
 			Line line(Vec2D(0, 0), Vec2D(m_Width, m_Height));
+			Triangle triangle(Vec2D(60, 10), Vec2D(10, 110), Vec2D(110, 110));
+			Rectangle rect(Vec2D(m_Width / 2 - 25, m_Height / 2 - 25), 50, 50);
+			Circle circle(Vec2D(m_Width / 2 + 50, m_Height / 2 + 50), 50);
+
 			Draw(line, Color::Yellow());
+			Draw(triangle, Color::Red(), true, Color::Red());
+			Draw(rect, Color::Blue(), true, Color::Blue());
+			Draw(circle, Color(0, 255, 0, 150), true, Color(0, 255, 0, 150));
+
 			SwapBuffers();
 		}
 	}
@@ -50,7 +62,7 @@ namespace Core
 			ClearScreen();
 			SDL_BlitScaled(m_BackBuffer.GetSurface(), nullptr, m_Surface, nullptr);
 			SDL_UpdateWindowSurface(m_Window);
-			m_BackBuffer.Clear();
+			m_BackBuffer.Clear(m_ClearColor);
 		}
 	}
 
@@ -128,6 +140,78 @@ namespace Core
 		}
 	}
 
+	void SDLWindow::Draw(const Triangle& triangle, const Color& color, bool fill, const Color& fillColor)
+	{
+		assert(m_Window);
+		if (m_Window)
+		{
+			Line p0p1(triangle.GetP0(), triangle.GetP1());
+			Line p1p2(triangle.GetP1(), triangle.GetP2());
+			Line p2p0(triangle.GetP2(), triangle.GetP0());
+
+			Draw(p0p1, color);
+			Draw(p1p2, color);
+			Draw(p2p0, color);
+
+			if (fill)
+				FillPoly(triangle.GetPoints(), fillColor);
+		}
+	}
+
+	void SDLWindow::Draw(const Rectangle& rect, const Color& color, bool fill, const Color& fillColor)
+	{
+		assert(m_Window);
+		if (m_Window)
+		{
+			std::vector<Vec2D> points = rect.GetPoints();
+			Line p0p1(points[0], points[1]);
+			Line p1p2(points[1], points[2]);
+			Line p2p3(points[2], points[3]);
+			Line p3p0(points[3], points[0]);
+
+			Draw(p0p1, color);
+			Draw(p1p2, color);
+			Draw(p2p3, color);
+			Draw(p3p0, color);
+
+			if (fill)
+				FillPoly(rect.GetPoints(), fillColor);
+		}
+	}
+
+	void SDLWindow::Draw(const Circle& circle, const Color& color, bool fill, const Color& fillColor)
+	{
+		assert(m_Window);
+		if (m_Window)
+		{
+			static constexpr unsigned int NUM_CIRCLE_SEGMENTS = 30;
+			float angle = TWO_PI / static_cast<float>(NUM_CIRCLE_SEGMENTS);
+
+			std::vector<Vec2D> circlePoints;
+			std::vector<Line> lines;
+
+			Vec2D p0 = Vec2D(circle.GetCenterPoint().GetX() + circle.GetRadius(), circle.GetCenterPoint().GetY());
+			Vec2D p1 = p0;
+			Line nextLineToDraw;
+
+			for (unsigned int i = 0; i < NUM_CIRCLE_SEGMENTS; ++i)
+			{
+				p1.Rotate(angle, circle.GetCenterPoint());
+				nextLineToDraw.SetP0(p0);
+				nextLineToDraw.SetP1(p1);
+				lines.push_back(nextLineToDraw);
+				p0 = p1;
+				circlePoints.push_back(p0);
+			}
+
+			for (const Line& line : lines)
+				Draw(line, color);
+
+			if (fill)
+				FillPoly(circlePoints, fillColor);
+		}
+	}
+
 	void SDLWindow::Init(const WindowProps& props)
 	{
 		if (SDL_Init(SDL_INIT_VIDEO))
@@ -145,7 +229,7 @@ namespace Core
 		if (m_Window)
 		{
 			m_Surface = SDL_GetWindowSurface(m_Window);
-			SDL_PixelFormat* pixelFormat = m_Surface->format;
+			SDL_PixelFormat* pixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
 			Color::InitColorFormat(pixelFormat);
 			m_ClearColor = Color::Black();
 			m_BackBuffer.Init(m_Width, m_Height, pixelFormat->format);
@@ -175,5 +259,67 @@ namespace Core
 
 	void SDLWindow::FillPoly(const std::vector<Vec2D>& points, const Color& color)
 	{
+		if (!points.empty())
+		{
+			float top = points[0].GetY();
+			float bottom = points[0].GetY();
+			float right = points[0].GetX();
+			float left = points[0].GetX();
+
+			for (size_t i = 1; i < points.size(); ++i)
+			{
+				if (points[i].GetY() < top)
+					top = points[i].GetY();
+
+				if (points[i].GetY() > bottom)
+					bottom = points[i].GetY();
+
+				if (points[i].GetX() < left)
+					left = points[i].GetX();
+
+				if (points[i].GetX() > right)
+					right = points[i].GetX();
+			}
+
+			for (int pixelY = top; pixelY < bottom; ++pixelY)
+			{
+				std::vector<float> nodeXVec;
+				size_t j = points.size() - 1;
+				for (size_t i = 0; i < points.size(); ++i)
+				{
+					float pointiY = points[i].GetY();
+					float pointjY = points[j].GetY();
+					if ((pointiY <= static_cast<float>(pixelY) && pointjY > static_cast<float>(pixelY)) ||
+						(pointjY <= static_cast<float>(pixelY) && pointiY > static_cast<float>(pixelY)))
+					{
+						float denom = pointjY - pointiY;
+						if (IsEqual(denom, 0))
+							continue;
+
+						float x = points[i].GetX() + (pixelY - pointiY) / denom * (points[j].GetX() - points[i].GetX());
+						nodeXVec.push_back(x);
+					}
+					j = i;
+				}
+				std::sort(nodeXVec.begin(), nodeXVec.end());
+
+				for (size_t k = 0; k < nodeXVec.size(); k += 2)
+				{
+					if (nodeXVec[k] > right)
+						break;
+
+					if (nodeXVec[k + 1] > left)
+					{
+						if (nodeXVec[k] < left)
+							nodeXVec[k] = left;
+						if (nodeXVec[k + 1] > right)
+							nodeXVec[k + 1] = right;
+
+						for (int pixelX = nodeXVec[k]; pixelX < nodeXVec[k + 1]; ++pixelX)
+							Draw(pixelX, pixelY, color);
+					}
+				}
+			}
+		}
 	}
 }

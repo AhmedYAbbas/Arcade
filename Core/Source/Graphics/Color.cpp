@@ -11,6 +11,21 @@ namespace Core
 		m_Format = format;
 	}
 
+	Color Color::EvaluateOneMinusSourceAlpha(const Color& source, const Color& destination)
+	{
+		uint8_t alpha = source.GetAlpha();
+		float sourceAlpha = static_cast<float>(alpha) / 255.f;
+		float destAlpha = 1.f - sourceAlpha;
+
+		Color outColor;
+		outColor.SetAlpha(255);
+		outColor.SetRed(static_cast<float>(source.GetRed()) * sourceAlpha + destination.GetRed() * destAlpha);
+		outColor.SetGreen(static_cast<float>(source.GetGreen()) * sourceAlpha + destination.GetGreen() * destAlpha);
+		outColor.SetBlue(static_cast<float>(source.GetBlue()) * sourceAlpha + destination.GetBlue() * destAlpha);
+
+		return outColor;
+	}
+
 	Color::Color()
 		: Color(0)
 	{

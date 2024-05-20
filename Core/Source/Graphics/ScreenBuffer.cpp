@@ -60,9 +60,12 @@ namespace Core
 		if (m_Surface && (y < m_Surface->h && y >= 0 && x >= 0 && x < m_Surface->w))
 		{
 			SDL_LockSurface(m_Surface);
+
 			uint32_t* pixels = (uint32_t*)m_Surface->pixels;
-			uint32_t index = GetIndex(y, x);
-			pixels[index] = color.GetPixelColor();
+			size_t index = GetIndex(y, x);
+			Color surfaceColor = Color(pixels[index]);
+			pixels[index] = Color::EvaluateOneMinusSourceAlpha(color, surfaceColor).GetPixelColor();
+
 			SDL_UnlockSurface(m_Surface);
 		}
 	}
