@@ -1,4 +1,4 @@
-project "Breakout"
+project "Arcade"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++20"
@@ -12,7 +12,9 @@ project "Breakout"
         "Source",
 
         -- Include Core
-        "../Core/Source"
+        "../Core/Source",
+        "../Core/Vendor",
+        "%{IncludeDir.SDL2}/include"
     }
 
     links

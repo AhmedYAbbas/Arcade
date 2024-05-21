@@ -25,33 +25,9 @@ namespace Core
 		Shutdown();
 	}
 
-	void SDLWindow::OnUpdate()
+	void SDLWindow::Update()
 	{
-		while (m_Running)
-		{
-			SDL_Event sdlEvent;
-			while (SDL_PollEvent(&sdlEvent))
-			{
-				switch (sdlEvent.type)
-				{
-					case SDL_QUIT:
-						m_Running = false;
-						break;
-				}
-			}
-
-			Line line(Vec2D(0, 0), Vec2D(m_Width, m_Height));
-			Triangle triangle(Vec2D(60, 10), Vec2D(10, 110), Vec2D(110, 110));
-			Rectangle rect(Vec2D(m_Width / 2 - 25, m_Height / 2 - 25), 50, 50);
-			Circle circle(Vec2D(m_Width / 2 + 50, m_Height / 2 + 50), 50);
-
-			Draw(line, Color::Yellow());
-			Draw(triangle, Color::Red(), true, Color::Red());
-			Draw(rect, Color::Blue(), true, Color::Blue());
-			Draw(circle, Color(0, 255, 0, 150), true, Color(0, 255, 0, 150));
-
-			SwapBuffers();
-		}
+		SwapBuffers();
 	}
 
 	void SDLWindow::SwapBuffers()

@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Graphics/Color.h"
+
 namespace Core
 {
 	struct WindowProps
@@ -15,11 +17,30 @@ namespace Core
 		}
 	};
 
+	class Vec2D;
+	class Line;
+	class Triangle;
+	class Rectangle;
+	class Circle;
+
 	class Window
 	{
 	public:
 		virtual ~Window() = default;
-		virtual void OnUpdate() = 0;
+
+		virtual void Update() = 0;
+		virtual void Draw(int x, int y, const Color& color) = 0;
+		virtual void Draw(const Vec2D& point, const Color& color) = 0;
+		virtual void Draw(const Line& line, const Color& color) = 0;
+		virtual void Draw(const Triangle& triangle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) = 0;
+		virtual void Draw(const Rectangle& rect, const Color& color, bool fill = false, const Color& fillColor = Color::White()) = 0;
+		virtual void Draw(const Circle& circle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) = 0;
+
+		virtual inline uint32_t GetWidth() const = 0;
+		virtual inline uint32_t GetHeight() const = 0;
+
+		virtual void* GetNativeWindow() const = 0;
+
 		static Window* Create(const WindowProps& props = WindowProps());
 	};
 }

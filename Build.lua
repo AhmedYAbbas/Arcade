@@ -1,7 +1,7 @@
 workspace "Arcade"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
-   startproject "Breakout"
+   startproject "Arcade"
 
    -- Workspace-wide build options for MSVC
    filter "system:windows"
@@ -17,4 +17,4 @@ group "Core"
 	include "Core/Build-Core.lua"
 group ""
 
-include "Breakout/Build-App.lua"
+include "Arcade/Build-App.lua"

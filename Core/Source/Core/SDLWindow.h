@@ -21,20 +21,22 @@ namespace Core
 		SDLWindow(const WindowProps& props);
 		virtual ~SDLWindow();
 
-		virtual void OnUpdate() override;
+		virtual void Update() override;
 
 		void SwapBuffers();
 
 		inline void SetClearColor(const Color& color) { m_ClearColor = color; }
-		inline uint32_t GetWidth() const { return m_Width; }
-		inline uint32_t GetHeight() const { return m_Height; }
+		inline uint32_t GetWidth() const override { return m_Width; }
+		inline uint32_t GetHeight() const override { return m_Height; }
 
-		void Draw(int x, int y, const Color& color);
-		void Draw(const Vec2D& point, const Color& color);
-		void Draw(const Line& line, const Color& color);
-		void Draw(const Triangle& triangle, const Color& color, bool fill = false, const Color& fillColor = Color::White());
-		void Draw(const Rectangle& rect, const Color& color, bool fill = false, const Color& fillColor = Color::White());
-		void Draw(const Circle& circle, const Color& color, bool fill = false, const Color& fillColor = Color::White());
+		void Draw(int x, int y, const Color& color) override;
+		void Draw(const Vec2D& point, const Color& color) override;
+		void Draw(const Line& line, const Color& color) override;
+		void Draw(const Triangle& triangle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) override;
+		void Draw(const Rectangle& rect, const Color& color, bool fill = false, const Color& fillColor = Color::White()) override;
+		void Draw(const Circle& circle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) override;
+
+		inline virtual void* GetNativeWindow() const override { return m_Window; }
 
 	private:
 		void Init(const WindowProps& props);
@@ -44,8 +46,6 @@ namespace Core
 		void FillPoly(const std::vector<Vec2D>& points, const Color& color);
 
 	private:
-		bool m_Running = true;
-
 		std::string m_Title;
 		uint32_t m_Width;
 		uint32_t m_Height;
