@@ -9,4 +9,5 @@ namespace Core
 	bool IsEqual(float X, float y);
 	bool IsGreaterThanOrEqual(float x, float y);
 	bool IsLessThanOrEqual(float x, float y);
+	float MillisecondsToSeconds(unsigned int milliseconds);
 }
