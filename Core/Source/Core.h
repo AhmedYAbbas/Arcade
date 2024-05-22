@@ -19,3 +19,8 @@
 #include "Shapes/Line.h"
 #include "Shapes/Rectangle.h"
 #include "Shapes/Triangle.h"
+
+// -------------Utility------------
+#include "Utility/BoundaryEdge.h"
+#include "Utility/Utils.h"
+#include "Utility/Vec2D.h"

@@ -3,6 +3,10 @@
 namespace Core
 {
 	const Vec2D Vec2D::Zero;
+	const Vec2D Vec2D::Up = {0.f, -1.f};
+	const Vec2D Vec2D::Down = {0.f, 1.f};
+	const Vec2D Vec2D::Right = {1.f, 0.f};
+	const Vec2D Vec2D::Left = {-1.f, 0.f};
 
 	bool operator==(const Vec2D& vec1, const Vec2D& vec2)
 	{

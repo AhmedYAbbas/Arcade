@@ -11,8 +11,8 @@ void ArcadeScene::Init()
 	keyboardAction.Key = Core::GameController::ActionKey();
 	keyboardAction.Action = [](uint32_t dt, Core::InputState state)
 	{
-		if (Core::GameController::IsPressed(state))
-			std::cout << "Action button was pressed!" << std::endl;	
+		//if (Core::GameController::IsPressed(state))
+			//std::cout << "Action button was pressed!" << std::endl;	
 	};
 
 	m_GameController.AddKeyboardButtonAction(keyboardAction);
@@ -22,14 +22,14 @@ void ArcadeScene::Init()
 	mouseAction.MouseButton = Core::GameController::LeftMouseButton();
 	mouseAction.MouseInputAction = [](Core::InputState state, const Core::MousePosition& position)
 	{
-		if (Core::GameController::IsPressed(state))
-			std::cout << "Left mouse button was pressed!" << std::endl;
+		//if (Core::GameController::IsPressed(state))
+			//std::cout << "Left mouse button was pressed!" << std::endl;
 	};
 
 	m_GameController.AddMouseButtonAction(mouseAction);
 	m_GameController.SetMouseMovedAction([](const Core::MousePosition& mousePosition)
 	{
-		std::cout << "Mouse position x: " << mousePosition.X << ", y: " << mousePosition.Y << std::endl;
+		//std::cout << "Mouse position x: " << mousePosition.X << ", y: " << mousePosition.Y << std::endl;
 	});
 }
 

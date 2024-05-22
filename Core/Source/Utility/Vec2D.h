@@ -44,6 +44,10 @@ namespace Core
 
 	public:
 		static const Vec2D Zero;
+		static const Vec2D Up;
+		static const Vec2D Down;
+		static const Vec2D Right;
+		static const Vec2D Left;
 
 	private:
 		float m_X;
