@@ -3,6 +3,8 @@
 #include <Core.h>
 
 #include "Breakout/Paddle.h"
+#include "Breakout/Ball.h"
+#include "Breakout/LevelBoundary.h"
 
 class BreakoutScene : public Core::Scene
 {
@@ -15,5 +17,7 @@ private:
 	void ResetGameScene();
 
 private:
+	Ball m_Ball;
 	Paddle m_Paddle;
+	LevelBoundary m_LevelBoundary;
 };

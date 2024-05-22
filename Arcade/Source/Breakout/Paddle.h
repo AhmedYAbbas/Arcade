@@ -8,12 +8,16 @@ enum PaddleDirection
 	Right = 1 << 1
 };
 
+class Ball;
+
 class Paddle : public Excluder
 {
 public:
 	void Init(const Core::Rectangle& rect, const Core::Rectangle& boundary);
-	void Update(uint32_t dt);
+	void Update(uint32_t dt, Ball& ball);
 	void Draw(Core::Window& window);
+
+	bool Bounce(Ball& ball);
 
 	inline bool IsMovingLeft() const { return m_Direction == PaddleDirection::Left; }
 	inline bool IsMovingRight() const { return m_Direction == PaddleDirection::Right; }
