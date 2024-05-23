@@ -24,7 +24,8 @@ project "Arcade"
 
     postbuildcommands
     {
-        "{COPY} ../Core/Vendor/SDL2/lib/x64/SDL2.dll ../Binaries/" .. OutputDir .. "/%{prj.name}"
+        "{COPY} ../Core/Vendor/SDL2/lib/x64/SDL2.dll ../Binaries/" .. OutputDir .. "/%{prj.name}",
+        "{COPY} Assets ../Binaries/" .. OutputDir .. "/%{prj.name}"
     }
 
     targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")

@@ -25,6 +25,8 @@ namespace Core
 		void PopScene();
 		Scene* CurrentScene();
 
+		static const std::string& GetBasePath();
+
 	private:
 		std::unique_ptr<Window> m_Window;
 		bool m_Running = true;

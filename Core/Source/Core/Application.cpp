@@ -80,4 +80,10 @@ namespace Core
 			return nullptr;
 		return m_SceneStack.back().get();
 	}
+
+	const std::string& Application::GetBasePath()
+	{
+		static std::string basePath = SDL_GetBasePath();
+		return basePath;
+	}
 }
