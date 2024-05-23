@@ -39,8 +39,26 @@ namespace Core
 		if (m_Window)
 		{
 			ClearScreen();
-			SDL_BlitScaled(m_BackBuffer.GetSurface(), nullptr, m_Surface, nullptr);
-			SDL_UpdateWindowSurface(m_Window);
+
+			if (m_FastPath)
+			{
+				uint8_t* textureData = nullptr;
+				int texturePitch = 0;
+
+				if (SDL_LockTexture(m_Texture, nullptr, (void**)&textureData, &texturePitch) >= 0)
+				{
+					SDL_Surface* surface = m_BackBuffer.GetSurface();
+					memcpy(textureData, surface->pixels, surface->w * surface->h * m_PixelFormat->BytesPerPixel);
+					SDL_UnlockTexture(m_Texture);
+					SDL_RenderCopy(m_Renderer, m_Texture, nullptr, nullptr);
+					SDL_RenderPresent(m_Renderer);
+				}
+			}
+			else
+			{
+				SDL_BlitScaled(m_BackBuffer.GetSurface(), nullptr, m_Surface, nullptr);
+				SDL_UpdateWindowSurface(m_Window);
+			}
 			m_BackBuffer.Clear(m_ClearColor);
 		}
 	}
@@ -262,7 +280,7 @@ namespace Core
 		});
 	}
 
-	void SDLWindow::Init(const WindowProps& props)
+	void SDLWindow::Init(const WindowProps& props, bool fast)
 	{
 		if (SDL_Init(SDL_INIT_VIDEO))
 		{
@@ -274,21 +292,61 @@ namespace Core
 		m_Width = props.Width;
 		m_Height = props.Height;
 		m_Magnification = props.Magnification;
+		m_FastPath = fast;
 
 		m_Window = SDL_CreateWindow(m_Title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_Width * m_Magnification, m_Height * m_Magnification, 0);
 		if (m_Window)
 		{
-			m_Surface = SDL_GetWindowSurface(m_Window);
-			SDL_PixelFormat* pixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
-			Color::InitColorFormat(pixelFormat);
-			m_ClearColor = Color::Black();
-			m_BackBuffer.Init(m_Width, m_Height, pixelFormat->format);
+			uint8_t rClear = 0;
+			uint8_t gClear = 0;
+			uint8_t bClear = 0;
+			uint8_t aClear = 255;
+
+			if (m_FastPath)
+			{
+				m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+				if (!m_Renderer)
+				{
+					std::cout << "SDL_CreateRenderer failed!" << std::endl;
+					return;
+				}
+				SDL_SetRenderDrawColor(m_Renderer, rClear, gClear, bClear, aClear);
+			}
+			else
+				m_Surface = SDL_GetWindowSurface(m_Window);
+
+			m_PixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+
+			if (m_FastPath)
+				m_Texture = SDL_CreateTexture(m_Renderer, m_PixelFormat->format, SDL_TEXTUREACCESS_STREAMING, m_Width, m_Height);
+
+			Color::InitColorFormat(m_PixelFormat);
+			m_ClearColor = Color(rClear, gClear, bClear, aClear);
+			m_BackBuffer.Init(m_Width, m_Height, m_PixelFormat->format);
 			m_BackBuffer.Clear(m_ClearColor);
 		}
 	}
 
 	void SDLWindow::Shutdown()
 	{
+		if (m_PixelFormat)
+		{
+			SDL_FreeFormat(m_PixelFormat);
+			m_PixelFormat = nullptr;
+		}
+
+		if (m_Texture)
+		{
+			SDL_DestroyTexture(m_Texture);
+			m_Texture = nullptr;
+		}
+
+		if (m_Renderer)
+		{
+			SDL_DestroyRenderer(m_Renderer);
+			m_Renderer = nullptr;
+		}
+
 		if (m_Window)
 		{
 			SDL_DestroyWindow(m_Window);
@@ -303,7 +361,10 @@ namespace Core
 		assert(m_Window);
 		if (m_Window)
 		{
-			SDL_FillRect(m_Surface, nullptr, m_ClearColor.GetPixelColor());
+			if (m_FastPath)
+				SDL_RenderClear(m_Renderer);
+			else
+				SDL_FillRect(m_Surface, nullptr, m_ClearColor.GetPixelColor());
 		}
 	}
 

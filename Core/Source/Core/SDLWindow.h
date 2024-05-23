@@ -44,7 +44,7 @@ namespace Core
 		inline virtual void* GetNativeWindow() const override { return m_Window; }
 
 	private:
-		void Init(const WindowProps& props);
+		void Init(const WindowProps& props, bool fast = true);
 		void Shutdown();
 
 		void ClearScreen();
@@ -63,5 +63,10 @@ namespace Core
 
 		SDL_Window* m_Window;
 		SDL_Surface* m_Surface;
+
+		SDL_Renderer* m_Renderer;
+		SDL_PixelFormat* m_PixelFormat;
+		SDL_Texture* m_Texture;
+		bool m_FastPath;
 	};
 }
