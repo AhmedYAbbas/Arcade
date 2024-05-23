@@ -13,6 +13,8 @@
 // ------------Graphics-----------
 #include "Graphics/Color.h"
 #include "Graphics/ScreenBuffer.h"
+#include "Graphics/BMPImage.h"
+#include "Graphics/SpriteSheet.h"
 
 // -------------Shapes------------
 #include "Shapes/Circle.h"

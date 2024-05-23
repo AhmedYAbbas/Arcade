@@ -10,7 +10,7 @@ public:
 	ArcadeApp()
 	{
 		PushScene(std::make_unique<ArcadeScene>());
-		PushScene(std::make_unique<BreakoutScene>());
+		//PushScene(std::make_unique<BreakoutScene>());
 	}
 };
 

@@ -6,6 +6,8 @@
 #include "Shapes/Triangle.h"
 #include "Shapes/Rectangle.h"
 #include "Shapes/Circle.h"
+#include "Graphics/BMPImage.h"
+#include "Graphics/SpriteSheet.h"
 #include "SDLWindow.h"
 
 namespace Core
@@ -185,6 +187,22 @@ namespace Core
 
 			if (fill)
 				FillPoly(circlePoints, fillColor);
+		}
+	}
+
+	void SDLWindow::Draw(const SpriteSheet& ss, const std::string& spriteName, const Vec2D& pos)
+	{
+		Draw(ss.GetBMPImage(), ss.GetSprite(spriteName), pos);
+	}
+
+	void SDLWindow::Draw(const BMPImage& image, const Sprite& sprite, const Vec2D& pos)
+	{
+		uint32_t width = sprite.width;
+		uint32_t height = sprite.height;
+		for (uint32_t r = 0; r < height; ++r)
+		{
+			for (uint32_t c = 0; c < width; ++c)
+				Draw(c + pos.GetX(), r + pos.GetY(), image.GetPixels()[GetIndex(image.GetWidth(), r + sprite.yPos, c + sprite.xPos)]);
 		}
 	}
 

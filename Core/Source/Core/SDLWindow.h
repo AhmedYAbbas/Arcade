@@ -35,6 +35,8 @@ namespace Core
 		void Draw(const Triangle& triangle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) override;
 		void Draw(const Rectangle& rect, const Color& color, bool fill = false, const Color& fillColor = Color::White()) override;
 		void Draw(const Circle& circle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) override;
+		virtual void Draw(const BMPImage& image, const Sprite& sprite, const Vec2D& pos) override;
+		virtual void Draw(const SpriteSheet& ss, const std::string& spriteName, const Vec2D& pos) override;
 
 		inline virtual void* GetNativeWindow() const override { return m_Window; }
 
