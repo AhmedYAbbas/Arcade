@@ -13,7 +13,7 @@ namespace Core
 	public:
 		virtual ~Scene() = default;
 
-		virtual void Init() = 0;
+		virtual bool Init() = 0;
 		virtual void Update(uint32_t dt) = 0;
 		virtual void Draw(Window& window) = 0;
 		virtual const std::string& GetSceneName() const = 0;

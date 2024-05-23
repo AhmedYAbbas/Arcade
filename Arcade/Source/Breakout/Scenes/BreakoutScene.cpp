@@ -3,7 +3,7 @@
 const float INITIAL_BALL_SPEED = 100.f;
 const int MAX_LIVES = 3;
 
-void BreakoutScene::Init()
+bool BreakoutScene::Init()
 {
 	m_GameController.Clear();
 	ResetGameScene();
@@ -62,6 +62,7 @@ void BreakoutScene::Init()
 	};
 	m_GameController.AddKeyboardButtonAction(rightKeyAction);
 	
+	return true;
 }
 
 void BreakoutScene::Update(uint32_t dt)

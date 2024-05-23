@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <assert.h>
+#include <iostream>
 
 #include "Application.h"
 #include "Scene.h"
@@ -15,6 +16,9 @@ namespace Core
 		s_Instance = this;
 
 		m_Window = std::unique_ptr<Window>(Window::Create());
+
+		if (!m_Font.Load("ArcadeFont"))
+			std::cout << "Could not load arcade font!" << std::endl;
 	}
 
 	void Application::Run()

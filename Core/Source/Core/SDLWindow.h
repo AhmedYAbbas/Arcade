@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <SDL.h>
+#include <functional>
 
 #include "Window.h"
 #include "Graphics/Color.h"
@@ -35,8 +36,10 @@ namespace Core
 		void Draw(const Triangle& triangle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) override;
 		void Draw(const Rectangle& rect, const Color& color, bool fill = false, const Color& fillColor = Color::White()) override;
 		void Draw(const Circle& circle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) override;
-		virtual void Draw(const BMPImage& image, const Sprite& sprite, const Vec2D& pos) override;
-		virtual void Draw(const SpriteSheet& ss, const std::string& spriteName, const Vec2D& pos) override;
+
+		void Draw(const BMPImage& image, const Sprite& sprite, const Vec2D& pos, const Color overlayColor = Color::White()) override;
+		void Draw(const SpriteSheet& ss, const std::string& spriteName, const Vec2D& pos, const Color overlayColor = Color::White()) override;
+		void Draw(const BitmapFont& font, const std::string& textLine, const Vec2D& pos, const Color overlayColor = Color::White()) override;
 
 		inline virtual void* GetNativeWindow() const override { return m_Window; }
 
@@ -45,7 +48,9 @@ namespace Core
 		void Shutdown();
 
 		void ClearScreen();
-		void FillPoly(const std::vector<Vec2D>& points, const Color& color);
+
+		using FillPolyFunc = std::function<Color(uint32_t x, uint32_t y)>;
+		void FillPoly(const std::vector<Vec2D>& points, const FillPolyFunc& func);
 
 	private:
 		std::string m_Title;

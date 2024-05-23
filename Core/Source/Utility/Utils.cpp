@@ -19,6 +19,16 @@ namespace Core
 		return x < y || IsEqual(x, y);
 	}
 
+	float Clamp(float value, float min, float max)
+	{
+		if (value > max)
+			return max;
+		else if (value < min)
+			return min;
+
+		return value;
+	}
+
 	float MillisecondsToSeconds(unsigned int milliseconds)
 	{
 		return static_cast<float>(milliseconds / 1000.f);

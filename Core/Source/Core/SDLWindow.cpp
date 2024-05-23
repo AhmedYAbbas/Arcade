@@ -8,6 +8,7 @@
 #include "Shapes/Circle.h"
 #include "Graphics/BMPImage.h"
 #include "Graphics/SpriteSheet.h"
+#include "Graphics/BitmapFont.h"
 #include "SDLWindow.h"
 
 namespace Core
@@ -132,7 +133,7 @@ namespace Core
 			Draw(p2p0, color);
 
 			if (fill)
-				FillPoly(triangle.GetPoints(), fillColor);
+				FillPoly(triangle.GetPoints(), [&](uint32_t x, uint32_t y) { return fillColor; });
 		}
 	}
 
@@ -153,7 +154,7 @@ namespace Core
 			Draw(p3p0, color);
 
 			if (fill)
-				FillPoly(rect.GetPoints(), fillColor);
+				FillPoly(rect.GetPoints(), [&](uint32_t x, uint32_t y) { return fillColor; });
 		}
 	}
 
@@ -186,24 +187,79 @@ namespace Core
 				Draw(line, color);
 
 			if (fill)
-				FillPoly(circlePoints, fillColor);
+				FillPoly(circlePoints, [&](uint32_t x, uint32_t y) { return fillColor; });
 		}
 	}
 
-	void SDLWindow::Draw(const SpriteSheet& ss, const std::string& spriteName, const Vec2D& pos)
+	void SDLWindow::Draw(const SpriteSheet& ss, const std::string& spriteName, const Vec2D& pos, const Color overlayColor)
 	{
-		Draw(ss.GetBMPImage(), ss.GetSprite(spriteName), pos);
+		Draw(ss.GetBMPImage(), ss.GetSprite(spriteName), pos, overlayColor);
 	}
 
-	void SDLWindow::Draw(const BMPImage& image, const Sprite& sprite, const Vec2D& pos)
+	void SDLWindow::Draw(const BitmapFont& font, const std::string& textLine, const Vec2D& pos, const Color overlayColor)
 	{
+		uint32_t xPos = pos.GetX();
+		const SpriteSheet& ss = font.GetSpriteSheet();
+		for (const char& c : textLine)
+		{
+			if (c == ' ')
+			{
+				xPos += font.GetFontSpacingBetweenWords();
+				continue;
+			}
+
+			Sprite sprite = ss.GetSprite(std::string(1, c));
+			Draw(ss.GetBMPImage(), sprite, Vec2D(xPos, pos.GetY()), overlayColor);
+
+			xPos += sprite.width;
+			xPos += font.GetFontSpacingBetweenLetters();
+		}
+	}
+
+	void SDLWindow::Draw(const BMPImage& image, const Sprite& sprite, const Vec2D& pos, const Color overlayColor)
+	{
+		float rVal = static_cast<float>(overlayColor.GetRed()) / 255.f;
+		float gVal = static_cast<float>(overlayColor.GetGreen()) / 255.f;
+		float bVal = static_cast<float>(overlayColor.GetBlue()) / 255.f;
+		float aVal = static_cast<float>(overlayColor.GetAlpha()) / 255.f;
+
 		uint32_t width = sprite.width;
 		uint32_t height = sprite.height;
-		for (uint32_t r = 0; r < height; ++r)
+
+		const std::vector<Color>& pixel = image.GetPixels();
+
+		auto topLeft = pos;
+		auto topRight = pos + Vec2D(width, 0);
+		auto bottomLeft = pos + Vec2D(0, height);
+		auto bottomRight = pos + Vec2D(width, height);
+
+		std::vector<Vec2D> points {topLeft, bottomLeft, bottomRight, topRight};
+
+		Vec2D xAxis = topRight - topLeft;
+		Vec2D yAxis = bottomLeft - topLeft;
+
+		const float invXAxisLengthSq = 1.f / xAxis.Mag2();
+		const float invYAxisLengthSq = 1.f / yAxis.Mag2();
+
+		FillPoly(points, [&](uint32_t px, uint32_t py)
 		{
-			for (uint32_t c = 0; c < width; ++c)
-				Draw(c + pos.GetX(), r + pos.GetY(), image.GetPixels()[GetIndex(image.GetWidth(), r + sprite.yPos, c + sprite.xPos)]);
-		}
+			Vec2D p(px, py);
+			Vec2D d = p - topLeft;
+
+			float u = invXAxisLengthSq * d.Dot(xAxis);
+			float v = invYAxisLengthSq * d.Dot(yAxis);
+
+			u = Clamp(u, 0.f, 1.f);
+			v = Clamp(v, 0.f, 1.f);
+
+			float tx = std::roundf(u * static_cast<float>(sprite.width));
+			float ty = std::roundf(v * static_cast<float>(sprite.height));
+
+			Color imageColor = pixel[GetIndex(image.GetWidth(), ty + sprite.yPos, tx + sprite.xPos)];
+			Color newColor(imageColor.GetRed() * rVal, imageColor.GetGreen() * gVal, imageColor.GetBlue() * bVal, imageColor.GetAlpha() * aVal);
+			return newColor;
+
+		});
 	}
 
 	void SDLWindow::Init(const WindowProps& props)
@@ -251,7 +307,7 @@ namespace Core
 		}
 	}
 
-	void SDLWindow::FillPoly(const std::vector<Vec2D>& points, const Color& color)
+	void SDLWindow::FillPoly(const std::vector<Vec2D>& points, const FillPolyFunc& func)
 	{
 		if (!points.empty())
 		{
@@ -310,7 +366,7 @@ namespace Core
 							nodeXVec[k + 1] = right;
 
 						for (int pixelX = nodeXVec[k]; pixelX < nodeXVec[k + 1]; ++pixelX)
-							Draw(pixelX, pixelY, color);
+							Draw(pixelX, pixelY, func(pixelX, pixelY));
 					}
 				}
 			}

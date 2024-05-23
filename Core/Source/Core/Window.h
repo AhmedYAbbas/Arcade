@@ -24,6 +24,8 @@ namespace Core
 	class Circle;
 	class BMPImage;
 	class SpriteSheet;
+	class BitmapFont;
+
 	struct Sprite;
 
 	class Window
@@ -38,8 +40,10 @@ namespace Core
 		virtual void Draw(const Triangle& triangle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) = 0;
 		virtual void Draw(const Rectangle& rect, const Color& color, bool fill = false, const Color& fillColor = Color::White()) = 0;
 		virtual void Draw(const Circle& circle, const Color& color, bool fill = false, const Color& fillColor = Color::White()) = 0;
-		virtual void Draw(const BMPImage& image, const Sprite& sprite, const Vec2D& pos) = 0;
-		virtual void Draw(const SpriteSheet& ss, const std::string& spriteName, const Vec2D& pos) = 0;
+
+		virtual void Draw(const BMPImage& image, const Sprite& sprite, const Vec2D& pos, const Color overlayColor = Color::White()) = 0;
+		virtual void Draw(const SpriteSheet& ss, const std::string& spriteName, const Vec2D& pos, const Color overlayColor = Color::White()) = 0;
+		virtual void Draw(const BitmapFont& font, const std::string& textLine, const Vec2D& pos, const Color overlayColor = Color::White()) = 0;
 
 		virtual inline uint32_t GetWidth() const = 0;
 		virtual inline uint32_t GetHeight() const = 0;

@@ -5,6 +5,7 @@
 
 #include "Window.h"
 #include "InputController.h"
+#include "Graphics/BitmapFont.h"
 
 namespace Core
 {
@@ -26,6 +27,7 @@ namespace Core
 		Scene* CurrentScene();
 
 		static const std::string& GetBasePath();
+		inline const BitmapFont& GetFont() const { return m_Font; }
 
 	private:
 		std::unique_ptr<Window> m_Window;
@@ -33,6 +35,8 @@ namespace Core
 
 		std::vector<std::unique_ptr<Scene>> m_SceneStack;
 		InputController m_InputController;
+
+		BitmapFont m_Font;
 
 	private:
 		static Application* s_Instance;
