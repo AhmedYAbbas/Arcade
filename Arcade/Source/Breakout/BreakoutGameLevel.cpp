@@ -69,6 +69,16 @@ void BreakoutGameLevel::Draw(Core::Window& window)
 	}
 }
 
+bool BreakoutGameLevel::IsLevelComplete() const
+{
+	for (size_t i = 0; i < m_Blocks.size(); ++i)
+	{
+		if (!m_Blocks[i].IsDestroyed() && m_Blocks[i].GetHP() != Block::s_Unbreakable)
+			return false;
+	}
+	return true;
+}
+
 struct LayoutBlock
 {
 	char Symbol = '-';
