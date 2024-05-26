@@ -24,4 +24,7 @@ public:
 
 private:
 	std::unique_ptr<Core::Scene> GetScene(Game game);
+
+	Core::AnimatedSprite m_AnimatedSprite;
+	Core::SpriteSheet m_SpriteSheet;
 };

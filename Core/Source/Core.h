@@ -16,6 +16,9 @@
 #include "Graphics/ScreenBuffer.h"
 #include "Graphics/BMPImage.h"
 #include "Graphics/SpriteSheet.h"
+#include "Graphics/Animation.h"
+#include "Graphics/AnimationPlayer.h"
+#include "Graphics/AnimatedSprite.h"
 
 // -------------Shapes------------
 #include "Shapes/Circle.h"

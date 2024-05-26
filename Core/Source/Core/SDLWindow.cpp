@@ -312,7 +312,7 @@ namespace Core
 			else
 				m_Surface = SDL_GetWindowSurface(m_Window);
 
-			m_PixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA8888);
+			m_PixelFormat = SDL_AllocFormat(SDL_PIXELFORMAT_ARGB8888);
 
 			if (m_FastPath)
 				m_Texture = SDL_CreateTexture(m_Renderer, m_PixelFormat->format, SDL_TEXTUREACCESS_STREAMING, m_Width, m_Height);

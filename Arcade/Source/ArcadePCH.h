@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Core.h>
-
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -14,3 +12,5 @@
 #include <math.h>
 
 #include <vector>
+
+#include <Core.h>
