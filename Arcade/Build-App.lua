@@ -5,6 +5,9 @@ project "Arcade"
     targetdir "Binaries/%{cfg.buildcfg}"
     staticruntime "off"
 
+    pchheader "ArcadePCH.h"
+    pchsource "Source/ArcadePCH.cpp"
+
     files { "Source/**.h", "Source/**.cpp" }
 
     includedirs

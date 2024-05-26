@@ -1,3 +1,5 @@
+#include "CorePCH.h"
+
 #include <SDL.h>
 
 #include "BMPImage.h"

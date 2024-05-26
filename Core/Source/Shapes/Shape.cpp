@@ -1,3 +1,4 @@
+#include "CorePCH.h"
 #include "Shape.h"
 
 namespace Core

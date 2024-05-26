@@ -1,3 +1,4 @@
+#include "CorePCH.h"
 #include "Line.h"
 
 namespace Core

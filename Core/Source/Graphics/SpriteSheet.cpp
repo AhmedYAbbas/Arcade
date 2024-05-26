@@ -1,3 +1,4 @@
+#include "CorePCH.h"
 #include "SpriteSheet.h"
 #include "Utility/FileCommandLoader.h"
 #include "Utility/Utils.h"

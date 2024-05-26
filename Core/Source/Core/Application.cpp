@@ -1,6 +1,6 @@
+#include "CorePCH.h"
+
 #include <SDL.h>
-#include <assert.h>
-#include <iostream>
 
 #include "Application.h"
 #include "Scene.h"

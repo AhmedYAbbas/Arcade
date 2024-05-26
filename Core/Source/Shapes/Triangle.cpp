@@ -1,3 +1,4 @@
+#include "CorePCH.h"
 #include "Triangle.h"
 
 namespace Core

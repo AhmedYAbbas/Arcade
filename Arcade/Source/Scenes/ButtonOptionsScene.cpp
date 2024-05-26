@@ -1,6 +1,7 @@
+#include "ArcadePCH.h"
 #include "ButtonOptionsScene.h"
 
-ButtonOptionsScene::ButtonOptionsScene(const std::vector<std::string>& optionNames, const Core::Color& textColor, const std::vector<Core::Button::ButtonAction>& buttonActions)
+ButtonOptionsScene::ButtonOptionsScene(const std::vector<std::string>& optionNames, const Core::Color& textColor)
 	: m_HighlightedOption(0)
 {
 	const Core::BitmapFont& font = Core::Application::Get().GetFont();
@@ -12,9 +13,12 @@ ButtonOptionsScene::ButtonOptionsScene(const std::vector<std::string>& optionNam
 
 	if (!optionNames.empty())
 		m_Buttons[m_HighlightedOption].SetHighlighted(true);
+}
 
+void ButtonOptionsScene::SetButtonActions(const std::vector<Core::Button::ButtonAction>& actions)
+{
 	for (size_t i = 0; i < m_Buttons.size(); ++i)
-		m_Buttons[i].SetButtonAction(buttonActions[i]);
+		m_Buttons[i].SetButtonAction(actions[i]);
 }
 
 bool ButtonOptionsScene::Init()

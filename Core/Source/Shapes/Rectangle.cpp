@@ -1,3 +1,4 @@
+#include "CorePCH.h"
 #include "Rectangle.h"
 
 namespace Core

@@ -1,3 +1,4 @@
+#include "CorePCH.h"
 #include "Buttton.h"
 #include "Window.h"
 
@@ -15,7 +16,7 @@ namespace Core
 
 	void Button::Draw(Window& window)
 	{
-		window.Draw(m_BitmapFont, m_Title, m_BitmapFont.GetDrawPosition(m_Title, m_BoundingBox, BitmapFontXAlignment::Center, BitmapFontYAlignment::Center));
+		window.Draw(m_BitmapFont, m_Title, m_BitmapFont.GetDrawPosition(m_Title, m_BoundingBox, BitmapFontXAlignment::Center, BitmapFontYAlignment::Center), m_TextColor);
 
 		if (m_Highlighted)
 			window.Draw(m_BoundingBox, m_HighlightColor);

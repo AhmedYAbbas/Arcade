@@ -1,3 +1,4 @@
+#include "CorePCH.h"
 #include "BitmapFont.h"
 #include "Shapes/Rectangle.h"
 #include "Utility/Vec2D.h"

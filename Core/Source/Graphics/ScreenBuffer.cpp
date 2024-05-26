@@ -1,5 +1,4 @@
-#include <assert.h>
-
+#include "CorePCH.h"
 #include "ScreenBuffer.h"
 
 namespace Core

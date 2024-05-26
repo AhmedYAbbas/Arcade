@@ -1,3 +1,4 @@
+#include "ArcadePCH.h"
 #include "BreakoutScene.h"
 
 const float INITIAL_BALL_SPEED = 100.f;
@@ -61,6 +62,18 @@ bool BreakoutScene::Init()
 	}
 	};
 	m_GameController.AddKeyboardButtonAction(rightKeyAction);
+
+	Core::KeyboardButtonAction backAction;
+	backAction.Key = Core::GameController::CancelKey();
+	backAction.Action = [this](uint32_t dt, Core::InputState state)
+	{
+		if (m_GameState == BreakoutGameState::Serve || m_GameState == BreakoutGameState::GameOver)
+		{
+			if (Core::GameController::IsPressed(state))
+				Core::Application::Get().PopScene();
+		}
+	};
+	m_GameController.AddKeyboardButtonAction(backAction);
 	
 	return true;
 }

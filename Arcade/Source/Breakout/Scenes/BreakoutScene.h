@@ -16,6 +16,7 @@ enum class BreakoutGameState
 
 class BreakoutScene : public Core::Scene
 {
+public:
 	virtual bool Init() override;
 	virtual void Update(uint32_t dt) override;
 	virtual void Draw(Core::Window& window) override;

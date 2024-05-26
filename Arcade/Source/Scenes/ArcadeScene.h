@@ -2,7 +2,17 @@
 
 #include <Core.h>
 
-class ArcadeScene : public Core::Scene
+#include "ButtonOptionsScene.h"
+
+enum class Game
+{
+	Tetris,
+	Breakout,
+	Asteroids,
+	Pacman
+};
+
+class ArcadeScene : public ButtonOptionsScene
 {
 public:
 	ArcadeScene();
@@ -11,4 +21,7 @@ public:
 	virtual void Update(uint32_t dt) override;
 	virtual void Draw(Core::Window& window) override;
 	virtual const std::string& GetSceneName() const override;
+
+private:
+	std::unique_ptr<Core::Scene> GetScene(Game game);
 };

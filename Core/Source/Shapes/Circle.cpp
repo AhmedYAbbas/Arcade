@@ -1,3 +1,4 @@
+#include "CorePCH.h"
 #include "Circle.h"
 
 namespace Core

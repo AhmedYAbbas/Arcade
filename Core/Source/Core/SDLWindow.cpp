@@ -1,7 +1,4 @@
-#include <iostream>
-#include <assert.h>
-#include <algorithm>
-
+#include "CorePCH.h"
 #include "Shapes/Line.h"
 #include "Shapes/Triangle.h"
 #include "Shapes/Rectangle.h"

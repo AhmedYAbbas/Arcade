@@ -5,6 +5,9 @@ project "Core"
     targetdir "Binaries/%{cfg.buildcfg}"
     staticruntime "off"
 
+    pchheader "CorePCH.h"
+    pchsource "Source/CorePCH.cpp"
+
     files { "Source/**.h", "Source/**.cpp" }
 
     includedirs

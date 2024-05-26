@@ -1,5 +1,4 @@
-#include <math.h>
-
+#include "CorePCH.h"
 #include "Utils.h"
 
 namespace Core

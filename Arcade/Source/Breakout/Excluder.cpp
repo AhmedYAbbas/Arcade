@@ -1,3 +1,4 @@
+#include "ArcadePCH.h"
 #include "Excluder.h"
 
 void Excluder::Init(const Core::Rectangle& rect, bool reverseNormals)

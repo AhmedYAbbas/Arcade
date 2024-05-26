@@ -8,7 +8,9 @@
 class ButtonOptionsScene : public Core::Scene
 {
 public:
-	ButtonOptionsScene(const std::vector<std::string>& optionNames, const Core::Color& textColor, const std::vector<Core::Button::ButtonAction>& buttonActions);
+	ButtonOptionsScene(const std::vector<std::string>& optionNames, const Core::Color& textColor);
+
+	void SetButtonActions(const std::vector<Core::Button::ButtonAction>& actions);
 
 	virtual bool Init() override;
 	virtual void Update(uint32_t dt) override;

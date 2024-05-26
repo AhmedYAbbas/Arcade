@@ -1,3 +1,5 @@
+#include "ArcadePCH.h"
+
 #include <Core.h>
 #include <Core/EntryPoint.h>
 
