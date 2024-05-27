@@ -11,7 +11,7 @@ namespace Core
 		Rectangle(const Vec2D& topLeft, unsigned int width, unsigned int height);
 		Rectangle(const Vec2D& topLeft, const Vec2D& bottomRight);
 
-		static Rectangle Inset(const Rectangle& rect, Vec2D& insets);
+		static Rectangle Inset(const Rectangle& rect, const Vec2D& insets);
 
 		virtual Vec2D GetCenterPoint() const override;
 		virtual const std::vector<Vec2D> GetPoints() const override;

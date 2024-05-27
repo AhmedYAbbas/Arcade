@@ -20,9 +20,9 @@ namespace Core
 		m_Points.push_back(bottomRight);
 	}
 
-	Rectangle Rectangle::Inset(const Rectangle& rect, Vec2D& insets)
+	Rectangle Rectangle::Inset(const Rectangle& rect, const Vec2D& insets)
 	{
-		return Rectangle(rect.GetTopLeftPoint() + insets, rect.GetWidth() - 2 * insets.GetX(), rect.GetHeight() - 2* insets.GetY());
+		return Rectangle(rect.GetTopLeftPoint() + insets, rect.GetWidth() - 2 * insets.GetX(), rect.GetHeight() - 2 * insets.GetY());
 	}
 
 	Vec2D Rectangle::GetCenterPoint() const

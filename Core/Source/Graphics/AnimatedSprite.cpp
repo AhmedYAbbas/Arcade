@@ -48,6 +48,11 @@ namespace Core
 
 	void AnimatedSprite::Pause()
 	{
+		m_AnimationPlayer.Pause();
+	}
+
+	void AnimatedSprite::Stop()
+	{
 		m_AnimationPlayer.Stop();
 	}
 
