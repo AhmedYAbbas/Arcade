@@ -1,25 +1,15 @@
 #pragma once
 
-#include "ButtonOptionsScene.h"
+#include "Pacman/Level.h"
 
-enum class Game
-{
-	Tetris,
-	Breakout,
-	Asteroids,
-	Pacman
-};
-
-class ArcadeScene : public ButtonOptionsScene
+class PacmanScene : public Core::Scene
 {
 public:
-	ArcadeScene();
-
 	virtual bool Init() override;
 	virtual void Update(uint32_t dt) override;
 	virtual void Draw(Core::Window& window) override;
 	virtual const std::string& GetSceneName() const override;
 
 private:
-	std::unique_ptr<Core::Scene> GetScene(Game game);
+	Level m_Level;
 };
