@@ -4,7 +4,7 @@
 static constexpr uint32_t NUM_POINTS_FOR_GHOST = 200;
 
 Ghost::Ghost()
-	: m_Points(0), m_InitialPos(Core::Vec2D::Zero)
+	: m_Points(0), m_InitialPos(Core::Vec2D::Zero), m_IsReleased(false), m_Delegate(nullptr), m_CanChangeDirection(true), m_VulnerabilityTimer(0), m_State(GhostState::Alive)
 {
 }
 
@@ -86,10 +86,24 @@ void Ghost::ResetToFirstPosition()
 	m_VulnerabilityTimer = 0;
 	SetGhostState(GhostState::Alive);
 	m_CanChangeDirection = true;
+	m_IsReleased = false;
+
+	if (m_Delegate)
+		m_Delegate->GhostWasResetToFirstPosition();
+}
+
+void Ghost::ReleaseFromPen()
+{
+	m_IsReleased = true;
+	if (m_Delegate)
+		m_Delegate->GhostWasReleasedFromPen();
 }
 
 void Ghost::SetGhostState(GhostState state)
 {
+	if (m_Delegate)
+		m_Delegate->GhostDelegateGhostStateChangedTo(m_State, state);
+
 	m_State = state;
 	switch (m_State)
 	{

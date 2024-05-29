@@ -18,14 +18,22 @@ enum class GhostAIState
 	GoToPen
 };
 
-class GhostAI
+class GhostAI : public GhostDelegate
 {
 public:
 	GhostAI();
 
-	void Init(Ghost& ghost, uint32_t lookAheadDistance, const Core::Vec2D scatterTarget, GhostName name);
+	void Init(Ghost& ghost, uint32_t lookAheadDistance, const Core::Vec2D scatterTarget, const Core::Vec2D& ghostPenTarget, const Core::Vec2D& ghostExitPenPosition, GhostName name);
 	PacmanMovement Update(uint32_t dt, const Pacman& pacman, const Level& level, const std::vector<Ghost>& ghosts);
 	void Draw(Core::Window& window);
+
+	inline bool WantsToLeavePen() const { return m_State == GhostAIState::ExitPen; }
+	inline bool IsInPen() const { return m_State == GhostAIState::Start || m_State == GhostAIState::InPen; }
+	inline bool IsEnteringPen() const { return m_State == GhostAIState::GoToPen; }
+
+	virtual void GhostDelegateGhostStateChangedTo(GhostState lastState, GhostState state) override;
+	virtual void GhostWasReleasedFromPen() override;
+	virtual void GhostWasResetToFirstPosition() override;
 
 private:
 	void SetState(GhostAIState state);
@@ -33,6 +41,8 @@ private:
 	const Core::Vec2D& GetChaseTarget(uint32_t dt, const Pacman& pacman, const Level& level, const std::vector<Ghost>& ghosts);
 
 private:
+	Core::Vec2D m_GhostPenTarget;
+	Core::Vec2D m_GhostExitPenPosition;
 	Core::Vec2D m_ScatterTarget;
 	Core::Vec2D m_Target;
 	uint32_t m_LookAheadDistance;

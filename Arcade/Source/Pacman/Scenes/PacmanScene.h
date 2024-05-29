@@ -5,6 +5,14 @@
 #include "Pacman/Ghost.h"
 #include "Pacman/GhostAI.h"
 
+enum class GameState
+{
+	Starting = 0,
+	PlayGame,
+	LostLife,
+	GameOver
+};
+
 class PacmanScene : public Core::Scene
 {
 public:
@@ -18,7 +26,8 @@ private:
 	void ResetLevel();
 	void UpdatePacmanMovement();
 	void HandleGameControllerState(uint32_t dt, Core::InputState state, PacmanMovement direction);
-	void DrawScore(Core::Window& window);
+	void DrawScore(Core::Window& window, const Core::BitmapFont& font, Core::Vec2D& textDrawPosition);
+	void DrawText(Core::Window& window, const Core::BitmapFont& font, Core::Vec2D& textDrawPosition);
 	void DrawLives(Core::Window& window);
 	void SetupGhosts();
 
@@ -27,7 +36,11 @@ private:
 	Core::SpriteSheet m_PacmanSpriteSheet;
 	Pacman m_Pacman;
 	Level m_Level;
-	size_t m_NumLives;
+	int m_NumLives;
 	std::vector<Ghost> m_Ghosts;
 	std::vector<GhostAI> m_GhostAIs;
+	uint32_t m_ReleaseGhostTimer;
+	GameState m_GameState;
+	uint32_t m_LevelStartingTimer;
+	Core::Rectangle m_StringRect;
 };

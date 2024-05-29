@@ -4,6 +4,7 @@
 
 #include "Excluder.h"
 #include "GameUtils.h"
+#include "GhostAI.h"
 
 class Pacman;
 class Ghost;
@@ -12,11 +13,12 @@ class Level
 {
 public:
 	bool Init(const std::string& filePath, const Core::SpriteSheet& spriteSheet);
-	void Update(uint32_t dt, Pacman& pacman, std::vector<Ghost>& ghosts);
+	void Update(uint32_t dt, Pacman& pacman, std::vector<Ghost>& ghosts, std::vector<GhostAI>& ghostAIs);
 	void Draw(Core::Window& window);
 
 	void ResetLevel();
 	bool WillCollide(const Core::Rectangle& boundingBox, PacmanMovement direction) const;
+	bool WillCollide(const Ghost& ghost, const GhostAI& ghostAI, PacmanMovement direction) const;
 	bool IsLevelOver() const;
 	void IncreaseLevel();
 	void ResetToFirstLevel();
@@ -24,6 +26,7 @@ public:
 	inline Core::Vec2D GetLayoutOffset() const { return m_LayoutOffset; }
 	inline Core::Vec2D GetPacmanSpawnLocation() const { return m_PacmanSpawnLocation; }
 	inline const std::vector<Core::Vec2D>& GetGhostSpwanPoints() const { return m_GhostsSpawnPoints; }
+	inline uint32_t GetInGameTextYPos() const { return m_BonusItem.BoundingBox.GetTopLeftPoint().GetY(); }
 
 private:
 	struct Tile
@@ -40,6 +43,7 @@ private:
 		int InkySpawnPoint = 0;
 		int PinkySpawnPoint = 0;
 		int ClydeSpawnPoint = 0;
+		int IsGate = 0;
 		char TeleportToSymbol = 0;
 		char Symbol = '-';
 	};
@@ -80,6 +84,8 @@ private:
 	bool ShouldSpawnBonusItem() const;
 
 private:
+	Core::BMPImage m_BGImage;
+
 	std::default_random_engine m_Generator;
 	BonusItem m_BonusItem;
 	std::string m_BonusItemSpriteName;
@@ -91,6 +97,8 @@ private:
 
 	std::vector<Tile> m_ExclusionTiles;
 	std::vector<Pellet> m_Pellets;
+
+	std::vector<Excluder> m_Gates;
 
 	Core::Vec2D m_LayoutOffset;
 	Core::Vec2D m_PacmanSpawnLocation;

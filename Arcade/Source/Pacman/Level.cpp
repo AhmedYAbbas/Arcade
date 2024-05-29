@@ -23,7 +23,7 @@ bool Level::Init(const std::string& filePath, const Core::SpriteSheet& spriteShe
 	return levelLoaded;
 }
 
-void Level::Update(uint32_t dt, Pacman& pacman, std::vector<Ghost>& ghosts)
+void Level::Update(uint32_t dt, Pacman& pacman, std::vector<Ghost>& ghosts, std::vector<GhostAI>& ghostAIs)
 {
 	for (const auto& wall : m_Walls)
 	{
@@ -40,6 +40,30 @@ void Level::Update(uint32_t dt, Pacman& pacman, std::vector<Ghost>& ghosts)
 			if (wall.HasCollided(ghost.GetBoundingBox(), edge))
 			{
 				Core::Vec2D offset = wall.GetCollisionOffset(ghost.GetBoundingBox());
+				ghost.MoveBy(offset);
+				ghost.Stop();
+			}
+		}
+	}
+
+	for (const auto& gate : m_Gates)
+	{
+		Core::BoundaryEdge edge;
+		if (gate.HasCollided(pacman.GetBoundingBox(), edge))
+		{
+			Core::Vec2D offset = gate.GetCollisionOffset(pacman.GetBoundingBox());
+			pacman.MoveBy(offset);
+			pacman.Stop();
+		}
+
+		for (size_t i = 0; i < ghosts.size(); ++i)
+		{
+			GhostAI& ghostAI = ghostAIs[i];
+			Ghost& ghost = ghosts[i];
+
+			if (!(ghostAI.WantsToLeavePen() || ghostAI.IsEnteringPen()) && gate.HasCollided(ghost.GetBoundingBox(), edge))
+			{
+				Core::Vec2D offset = gate.GetCollisionOffset(ghost.GetBoundingBox());
 				ghost.MoveBy(offset);
 				ghost.Stop();
 			}
@@ -78,7 +102,8 @@ void Level::Update(uint32_t dt, Pacman& pacman, std::vector<Ghost>& ghosts)
 				if (pellet.PowerPellet)
 				{
 					pacman.ResetGhostEatenMultiplier();
-					// TODO: make ghosts go vulnerable
+					for (auto& ghost : ghosts)
+						ghost.SetStateToVulnerable();
 				}
 			}
 		}
@@ -99,8 +124,10 @@ void Level::Update(uint32_t dt, Pacman& pacman, std::vector<Ghost>& ghosts)
 
 void Level::Draw(Core::Window& window)
 {
-	for (const auto& wall : m_Walls)
-		window.Draw(wall.GetRectangle(), Core::Color::Blue());
+	Core::Sprite bgSprite;
+	bgSprite.width = m_BGImage.GetWidth();
+	bgSprite.height = m_BGImage.GetHeight();
+	window.Draw(m_BGImage, bgSprite, Core::Vec2D::Zero);
 
 	for (const auto& pellet : m_Pellets)
 	{
@@ -124,12 +151,40 @@ bool Level::WillCollide(const Core::Rectangle& boundingBox, PacmanMovement direc
 {
 	Core::Rectangle box = boundingBox;
 	box.MoveBy(GetMovementVector(direction));
+	Core::BoundaryEdge edge;
 	for (const auto& wall : m_Walls)
 	{
-		Core::BoundaryEdge edge;
 		if (wall.HasCollided(box, edge))
 			return true;
 	}
+
+	for (const auto& gate : m_Gates)
+	{
+		if (gate.HasCollided(box, edge))
+			return true;
+	}
+
+	return false;
+}
+
+bool Level::WillCollide(const Ghost& ghost, const GhostAI& ghostAI, PacmanMovement direction) const
+{
+	Core::Rectangle bbox(ghost.GetBoundingBox());
+	bbox.MoveBy(GetMovementVector(direction));
+
+	Core::BoundaryEdge edge;
+	for (const auto& wall : m_Walls)
+	{
+		if (wall.HasCollided(bbox, edge))
+			return true;
+	}
+
+	for (const auto& gate : m_Gates)
+	{
+		if (!(ghostAI.IsEnteringPen() || ghostAI.WantsToLeavePen()) && gate.HasCollided(bbox, edge))
+			return true;
+	}
+
 	return false;
 }
 
@@ -156,6 +211,19 @@ void Level::ResetToFirstLevel()
 bool Level::LoadLevel(const std::string& filePath)
 {
 	Core::FileCommandLoader fileLoader;
+
+	std::string bgImageName;
+
+	Core::Command bgImageCommand;
+	bgImageCommand.CommandString = "bg_image";
+	bgImageCommand.ParseFunc = [&](Core::ParseFuncParams params)
+	{
+		bgImageName = Core::FileCommandLoader::ReadString(params);
+		bool loaded = m_BGImage.Load(Core::Application::Get().GetBasePath() + bgImageName);
+
+		assert(loaded && "Didn't  load the BG Image");
+	};
+	fileLoader.AddCommand(bgImageCommand);
 
 	Core::Command tileWidthCommand;
 	tileWidthCommand.CommandString = "tile_width";
@@ -288,6 +356,14 @@ bool Level::LoadLevel(const std::string& filePath)
 	};
 	fileLoader.AddCommand(tileClydeSpawnPointCommand);
 
+	Core::Command tileGateCommand;
+	tileGateCommand.CommandString = "tile_is_gate";
+	tileGateCommand.ParseFunc = [&](Core::ParseFuncParams params)
+	{
+		m_Tiles.back().IsGate = Core::FileCommandLoader::ReadInt(params);
+	};
+	fileLoader.AddCommand(tileGateCommand);
+
 	Core::Command layoutCommand;
 	layoutCommand.CommandString = "layout";
 	layoutCommand.CommandType = Core::CommandType::MultiLine;
@@ -299,7 +375,14 @@ bool Level::LoadLevel(const std::string& filePath)
 			if (Tile* tile = GetTileForSymbol(params.Line[c]))
 			{
 				tile->Position = Core::Vec2D(startingX, layoutOffset.GetY());
-				if (tile->Collidable > 0)
+
+				if (tile->IsGate > 0)
+				{
+					Excluder gate;
+					gate.Init(Core::Rectangle(Core::Vec2D(startingX, layoutOffset.GetY()), tile->Width, static_cast<int>(m_TileHeight)));
+					m_Gates.push_back(gate);
+				}
+				else if (tile->Collidable > 0)
 				{
 					Excluder wall;
 					wall.Init(Core::Rectangle(Core::Vec2D(startingX, layoutOffset.GetY()), tile->Width, static_cast<int>(m_TileHeight)));
@@ -311,9 +394,9 @@ bool Level::LoadLevel(const std::string& filePath)
 				else if (tile->ItemSpawnPoint)
 					m_BonusItem.BoundingBox = Core::Rectangle(Core::Vec2D(startingX + tile->Offset.GetX(), layoutOffset.GetY() + tile->Offset.GetY()), SPRITE_WIDTH, SPRITE_HEIGHT);
 				else if (tile->BlinkySpawnPoint > 0)
-					m_GhostsSpawnPoints[static_cast<int>(GhostName::Blinky)] = Core::Vec2D(startingX + tile->Offset.GetX(), layoutOffset.GetY() + tile->Offset.GetY());
+					m_GhostsSpawnPoints[static_cast<int>(GhostName::Blinky)] = Core::Vec2D(startingX + tile->Offset.GetX() + 1, layoutOffset.GetY() + tile->Offset.GetY());
 				else if (tile->InkySpawnPoint > 0)
-					m_GhostsSpawnPoints[static_cast<int>(GhostName::Inky)] = Core::Vec2D(startingX + tile->Offset.GetX(), layoutOffset.GetY() + tile->Offset.GetY());
+					m_GhostsSpawnPoints[static_cast<int>(GhostName::Inky)] = Core::Vec2D(startingX + tile->Offset.GetX() + 1, layoutOffset.GetY() + tile->Offset.GetY());
 				else if (tile->PinkySpawnPoint > 0)
 					m_GhostsSpawnPoints[static_cast<int>(GhostName::Pinky)] = Core::Vec2D(startingX + tile->Offset.GetX(), layoutOffset.GetY() + tile->Offset.GetY());
 				else if (tile->ClydeSpawnPoint > 0)
