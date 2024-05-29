@@ -18,7 +18,7 @@ public:
 	inline const Core::Rectangle GetBoundingBox() const { return m_Sprite.GetBoundingBox(); }
 	inline void MoveBy(const Core::Vec2D& delta) { m_Sprite.MoveBy(delta); }
 	inline void MoveTo(const Core::Vec2D& pos) { m_Sprite.SetPosition(pos); }
-	inline Core::Vec2D Position() const { m_Sprite.Position(); }
+	inline Core::Vec2D Position() const { return m_Sprite.Position(); }
 	inline PacmanMovement GetMovementDirection() const { return m_MovementDirection; }
 	virtual inline void SetMovementDirection(PacmanMovement direction) { m_MovementDirection = direction; }
 	inline const Core::Color& GetSpriteColor() const { return m_Sprite.GetColor(); }

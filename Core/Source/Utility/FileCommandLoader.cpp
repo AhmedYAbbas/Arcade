@@ -60,7 +60,7 @@ namespace Core
 								else
 								{
 									ParseFuncParams params;
-									params.DilimitPos = dilimitPos;
+									params.DilimitPos = 0;
 									params.LineNum = lineNum;
 									params.Line = line;
 									m_Commands[commandIndex].ParseFunc(params);
