@@ -50,7 +50,7 @@ namespace Core
 				CurrentScene()->Draw(*m_Window);
 			}
 
-			m_Window->Update();
+			m_Window->Update(dt);
 		}
 	}
 

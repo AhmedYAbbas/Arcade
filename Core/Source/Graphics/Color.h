@@ -2,6 +2,8 @@
 
 #include <stdint.h>
 
+#include "Utility/Easings.h"
+
 struct SDL_PixelFormat;
 
 namespace Core
@@ -29,23 +31,30 @@ namespace Core
 
 		inline uint32_t GetPixelColor() const { return m_Color; }
 
-		void SetRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+		void Generate32BitColor();
 
 		void SetRed(uint8_t red);
 		void SetGreen(uint8_t green);
 		void SetBlue(uint8_t blue);
 		void SetAlpha(uint8_t alpha);
 
-		uint8_t GetRed() const;
-		uint8_t GetGreen() const;
-		uint8_t GetBlue() const;
-		uint8_t GetAlpha() const;
+		inline uint8_t GetRed() const { return m_R; }
+		inline uint8_t GetGreen() const { return m_G; }
+		inline uint8_t GetBlue() const { return m_B; }
+		inline uint8_t GetAlpha() const { return m_A; }
+
+		static Color Lerp(const Color& c1, const Color& c2, float t);
+		static Color Lerp(const Color& c1, const Color& c2, float t, Ease::EasingFunc func);
 		
 	public:
 		static const SDL_PixelFormat* m_Format;
 
 	private:
 		uint32_t m_Color;
+		uint8_t m_R;
+		uint8_t m_G;
+		uint8_t m_B;
+		uint8_t m_A;
 	};
 
 	bool operator==(const Color& c1, const Color& c2);

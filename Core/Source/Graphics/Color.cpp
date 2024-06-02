@@ -1,8 +1,9 @@
 #include "CorePCH.h"
+#include "Color.h"
+#include "Utility/Easings.h"
+#include "Utility/Utils.h"
 
 #include <SDL.h>
-
-#include "Color.h"
 
 namespace Core
 {
@@ -17,123 +18,74 @@ namespace Core
 	{
 		uint8_t alpha = source.GetAlpha();
 		float sourceAlpha = static_cast<float>(alpha) / 255.f;
-		float destAlpha = 1.f - sourceAlpha;
 
-		Color outColor;
-		outColor.SetAlpha(255);
-		outColor.SetRed(static_cast<float>(source.GetRed()) * sourceAlpha + destination.GetRed() * destAlpha);
-		outColor.SetGreen(static_cast<float>(source.GetGreen()) * sourceAlpha + destination.GetGreen() * destAlpha);
-		outColor.SetBlue(static_cast<float>(source.GetBlue()) * sourceAlpha + destination.GetBlue() * destAlpha);
+		Color newColor = Color::Lerp(destination, source, sourceAlpha, Ease::EaseLinear);
+		newColor.SetAlpha(255);
 
-		return outColor;
+		return newColor;
 	}
 
 	Color::Color()
-		: Color(0)
+		: m_Color(0), m_R(0), m_G(0), m_B(0), m_A(0)
 	{
 	}
 
 	Color::Color(uint32_t color)
 		: m_Color(color)
 	{
+		SDL_GetRGBA(color, m_Format, &m_R, &m_G, &m_B, &m_A);
 	}
 
 	Color::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+		: m_Color(0), m_R(r), m_G(g), m_B(b), m_A(a)
 	{
-		SetRGBA(r, g, b, a);
+		Generate32BitColor();
 	}
 
-	void Color::SetRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+	void Color::Generate32BitColor()
 	{
-		m_Color = SDL_MapRGBA(m_Format, r, g, b, a);
+		m_Color = SDL_MapRGBA(m_Format, m_R, m_G, m_B, m_A);
 	}
 
 	void Color::SetRed(uint8_t red)
 	{
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-
-		SDL_GetRGBA(m_Color, m_Format, &r, &g, &b, &a);
-		SetRGBA(red, g, b, a);
+		m_R = red;
+		Generate32BitColor();
 	}
 
 	void Color::SetGreen(uint8_t green)
 	{
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-
-		SDL_GetRGBA(m_Color, m_Format, &r, &g, &b, &a);
-		SetRGBA(r, green, b, a);
+		m_G = green;
+		Generate32BitColor();
 	}
 
 	void Color::SetBlue(uint8_t blue)
 	{
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-
-		SDL_GetRGBA(m_Color, m_Format, &r, &g, &b, &a);
-		SetRGBA(r, g, blue, a);
+		m_B = blue;
+		Generate32BitColor();
 	}
 
 	void Color::SetAlpha(uint8_t alpha)
 	{
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-
-		SDL_GetRGBA(m_Color, m_Format, &r, &g, &b, &a);
-		SetRGBA(r, g, b, alpha);
+		m_A = alpha;
+		Generate32BitColor();
 	}
 
-	uint8_t Color::GetRed() const
+	Color Color::Lerp(const Color& c1, const Color& c2, float t)
 	{
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-
-		SDL_GetRGBA(m_Color, m_Format, &r, &g, &b, &a);
-		return r;
+		return Lerp(c1, c2, t, Ease::EaseLinear);
 	}
 
-	uint8_t Color::GetGreen() const
+	Color Color::Lerp(const Color& c1, const Color& c2, float t, Ease::EasingFunc func)
 	{
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
+		t = func(t);
 
-		SDL_GetRGBA(m_Color, m_Format, &r, &g, &b, &a);
-		return g;
-	}
+		uint8_t r = Clamp8(static_cast<uint8_t>(Lerpf(c1.GetRed(), c2.GetRed(), t)), 0, 255);
+		uint8_t g = Clamp8(static_cast<uint8_t>(Lerpf(c1.GetGreen(), c2.GetGreen(), t)), 0, 255);
+		uint8_t b = Clamp8(static_cast<uint8_t>(Lerpf(c1.GetBlue(), c2.GetBlue(), t)), 0, 255);
+		uint8_t a = Clamp8(static_cast<uint8_t>(Lerpf(c1.GetAlpha(), c2.GetAlpha(), t)), 0, 255);
 
-	uint8_t Color::GetBlue() const
-	{
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-
-		SDL_GetRGBA(m_Color, m_Format, &r, &g, &b, &a);
-		return b;
-	}
-
-	uint8_t Color::GetAlpha() const
-	{
-		uint8_t r;
-		uint8_t g;
-		uint8_t b;
-		uint8_t a;
-
-		SDL_GetRGBA(m_Color, m_Format, &r, &g, &b, &a);
-		return a;
+		return Color(r, g, b, a);
 	}
 
 	bool operator==(const Color& c1, const Color& c2)

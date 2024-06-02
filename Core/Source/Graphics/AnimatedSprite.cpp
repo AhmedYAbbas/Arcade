@@ -1,12 +1,12 @@
 #include "CorePCH.h"
-#include "AnimatedSprite.h"
 #include "Shapes/Rectangle.h"
+#include "AnimatedSprite.h"
 #include "Core/Window.h"
 
 namespace Core
 {
 	AnimatedSprite::AnimatedSprite()
-		: m_Position(Vec2D::Zero), m_SpriteSheet(nullptr)
+		: m_Position(Vec2D::Zero), m_SpriteSheet(nullptr), m_Angle(0.f), m_Scale(1.f), m_Alpha(1.f)
 	{
 	}
 
@@ -22,7 +22,7 @@ namespace Core
 		m_AnimationPlayer.Update(dt);
 	}
 
-	void AnimatedSprite::Draw(Window& window)
+	void AnimatedSprite::Draw(Window& window, bool bilinearFilter, bool debug)
 	{
 		AnimationFrame frame = m_AnimationPlayer.GetCurrentAnimationFrame();
 		Color frameColor = frame.FrameColor;
@@ -30,25 +30,40 @@ namespace Core
 		if (!frame.FrameColorSet)
 			frameColor = m_Color;
 
-		window.Draw(*m_SpriteSheet, frame.Frame, m_Position + frame.Offset, frameColor);
+		if (debug)
+			printf("frame: %s, frame number: %u\n", frame.Frame.c_str(), m_AnimationPlayer.GetCurrentFrameNumber());
+
+		DrawTransform transform;
+		transform.Pos = m_Position + frame.Offset;
+		transform.Scale = m_Scale;
+		transform.RotationAngle = m_Angle;
+
+		ColorParams colorParams;
+		colorParams.Alpha = m_Alpha;
+		colorParams.BilinearFiltering = bilinearFilter;
+		colorParams.Overlay = frameColor;
+		colorParams.Gradient.XParam = GradientXParam::NoXGradient;
+		colorParams.Gradient.YParam = GradientYParam::NoYGradient;
+
+		UVParams uvParams;
+
+		window.Draw(*m_SpriteSheet, frame.Frame, transform, colorParams, uvParams);
+
+		//window.Draw(*m_SpriteSheet, frame.Frame, m_Position + frame.Offset, frameColor);
 
 		if (!frame.Overlay.empty())
-			window.Draw(*m_SpriteSheet, frame.Overlay, m_Position, frame.OverlayColor);
+		{
+			transform.Pos = m_Position;
+			colorParams.Overlay = frame.OverlayColor;
+			window.Draw(*m_SpriteSheet, frame.Overlay, transform, colorParams, uvParams);
+			//window.Draw(*m_SpriteSheet, frame.Overlay, m_Position, frame.OverlayColor);
+		}
 	}
 
 	void AnimatedSprite::SetAnimation(const std::string& animationName, bool looped)
 	{
-		m_AnimationPlayer.Play(animationName, looped);
-	}
-
-	Vec2D AnimatedSprite::Size() const
-	{
-		return m_AnimationPlayer.GetCurrentAnimationFrame().Size;
-	}
-
-	void AnimatedSprite::Pause()
-	{
-		m_AnimationPlayer.Pause();
+		if (m_AnimationPlayer.Play(animationName, looped))
+			m_Size = m_AnimationPlayer.GetCurrentAnimation().GetSize();
 	}
 
 	void AnimatedSprite::Stop()
@@ -56,8 +71,20 @@ namespace Core
 		m_AnimationPlayer.Stop();
 	}
 
-	const Rectangle AnimatedSprite::GetBoundingBox() const
+	const Rectangle& AnimatedSprite::GetBoundingBox() const
 	{
-		return Rectangle(m_Position, Size().GetX(), Size().GetY());
+		m_BoundingBox.SetTopLeftPoint(m_Position);
+		m_BoundingBox.SetBottomRightPoint(Vec2D(m_Position.GetX() + m_Size.GetX() - 1, m_Position.GetY() + m_Size.GetY() - 1));
+		return m_BoundingBox;
+	}
+
+	uint32_t AnimatedSprite::GetTotalAnimationTimeInMS() const
+	{
+		if (m_AnimationPlayer.HasAnimation())
+		{
+			float msPerFrame = 1000.f / static_cast<float>(m_AnimationPlayer.GetCurrentAnimation().FPS());
+			return static_cast<uint32_t>(msPerFrame) * static_cast<uint32_t>(m_AnimationPlayer.GetCurrentAnimation().NumFrames());
+		}
+		return 0;
 	}
 }
