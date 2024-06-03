@@ -91,7 +91,7 @@ void Asteroid::Draw(Core::Window& window)
 	}
 }
 
-bool Asteroid::IsOutOfBound(const Core::Vec2D& largestSprite) const
+bool Asteroid::IsOutOfBounds(const Core::Vec2D& largestSprite) const
 {
 	if (GetPosition().GetX() > Core::Application::Get().GetWindow().GetWidth() + largestSprite.GetX()
 		|| GetPosition().GetX() < -largestSprite.GetX()

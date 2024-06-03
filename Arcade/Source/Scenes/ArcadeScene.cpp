@@ -1,8 +1,9 @@
 #include "ArcadePCH.h"
 #include "ArcadeScene.h"
-#include "Breakout/Scenes/BreakoutScene.h"
 #include "NotImplementedScene.h"
+#include "Breakout/Scenes/BreakoutScene.h"
 #include "Pacman/Scenes/PacmanStartScene.h"
+#include "Asteroids/Scenes/AsteroidsScene.h"
 
 ArcadeScene::ArcadeScene()
 	: ButtonOptionsScene({"Tetris", "Breakout", "Asteroids", "Pac-Man"}, Core::Color::Cyan())
@@ -68,11 +69,17 @@ std::unique_ptr<Core::Scene> ArcadeScene::GetScene(Game game)
 			break;
 		}
 		case Game::Asteroids:
+		{
+			std::unique_ptr<AsteroidsScene> asteroidsScene = std::make_unique<AsteroidsScene>();
+			return asteroidsScene;
 			break;
+		}
 		case Game::Pacman:
+		{
 			std::unique_ptr<PacmanStartScene> pacmanStartScene = std::make_unique<PacmanStartScene>();
 			return pacmanStartScene;
 			break;
+		}
 	}
 	std::unique_ptr<Core::Scene> notImplementedScene = std::make_unique<NotImplementedScene>();
 	return notImplementedScene;

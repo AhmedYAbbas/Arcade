@@ -44,7 +44,7 @@ namespace Core
 		inline uint8_t GetAlpha() const { return m_A; }
 
 		static Color Lerp(const Color& c1, const Color& c2, float t);
-		static Color Lerp(const Color& c1, const Color& c2, float t, Ease::EasingFunc func);
+		static Color Lerp(const Color& c1, const Color& c2, float t, const Ease::EasingFunc& func);
 		
 	public:
 		static const SDL_PixelFormat* m_Format;

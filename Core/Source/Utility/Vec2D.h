@@ -4,6 +4,7 @@
 #include <assert.h>
 
 #include "Utils.h"
+#include "Easings.h"
 
 namespace Core
 {
@@ -31,8 +32,13 @@ namespace Core
 		Vec2D Reflect(const Vec2D& normal) const;
 		float AngleBetween(const Vec2D& other) const;
 
-		void Rotate(float angle, const Vec2D& aroundPoint);
-		Vec2D Rotation(float angle, const Vec2D& aroundPoint) const;
+		void Rotate(float angle, const Vec2D& aroundPoint = Zero);
+		Vec2D Rotation(float angle, const Vec2D& aroundPoint = Zero) const;
+
+		Vec2D GetClockwisePerpendicularUnitVector() const;
+		Vec2D GetCounterClockwisePerpendicularUnitVector() const;
+
+		static Vec2D Lerp(const Vec2D& v1, const Vec2D& v2, float t, const Ease::EasingFunc& func);
 
 		Vec2D operator-() const;
 		Vec2D& operator+=(const Vec2D& other);

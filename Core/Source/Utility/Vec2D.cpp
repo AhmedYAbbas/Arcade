@@ -119,6 +119,30 @@ namespace Core
 		return rotatedSelf + aroundPoint;
 	}
 
+	Vec2D Vec2D::GetClockwisePerpendicularUnitVector() const
+	{
+		Vec2D unitVec = GetUnitVec();
+		return Vec2D(unitVec.m_Y, -unitVec.m_X);
+	}
+
+	Vec2D Vec2D::GetCounterClockwisePerpendicularUnitVector() const
+	{
+		Vec2D unitVec = GetUnitVec();
+		return Vec2D(-unitVec.m_Y, unitVec.m_X);
+	}
+
+	Vec2D Vec2D::Lerp(const Vec2D& v1, const Vec2D& v2, float t, const Ease::EasingFunc& func)
+	{
+		Vec2D r;
+
+		t = func(t);
+
+		r.SetX(Lerpf(v1.m_X, v2.m_X, t));
+		r.SetY(Lerpf(v1.m_Y, v2.m_Y, t));
+
+		return r;
+	}
+
 	Vec2D Vec2D::operator-() const
 	{
 		return Vec2D(-m_X, -m_Y);

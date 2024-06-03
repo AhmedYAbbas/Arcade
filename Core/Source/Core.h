@@ -31,3 +31,5 @@
 #include "Utility/Utils.h"
 #include "Utility/Vec2D.h"
 #include "Utility/FileCommandLoader.h"
+#include "Utility/Ray2D.h"
+#include "Utility/Easings.h"

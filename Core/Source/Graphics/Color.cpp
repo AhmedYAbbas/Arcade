@@ -76,7 +76,7 @@ namespace Core
 		return Lerp(c1, c2, t, Ease::EaseLinear);
 	}
 
-	Color Color::Lerp(const Color& c1, const Color& c2, float t, Ease::EasingFunc func)
+	Color Color::Lerp(const Color& c1, const Color& c2, float t, const Ease::EasingFunc& func)
 	{
 		t = func(t);
 

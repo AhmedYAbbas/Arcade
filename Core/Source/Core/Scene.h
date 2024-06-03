@@ -22,9 +22,6 @@ namespace Core
 		GameController& GetGameController() { return m_GameController; }
 
 	protected:
-
-
-	protected:
 		GameController m_GameController;
 	};
 }

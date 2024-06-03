@@ -28,7 +28,7 @@ public:
 	inline bool IsExploding() const { return m_Hit; }
 	inline bool IsDestroyed() const { return m_Destroyed; }
 
-	bool IsOutOfBound(const Core::Vec2D& largestSprite) const;
+	bool IsOutOfBounds(const Core::Vec2D& largestSprite) const;
 	void HitByAmmo(const std::vector<Core::Vec2D>& intersections);
 
 private:
