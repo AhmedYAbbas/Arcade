@@ -22,9 +22,9 @@ static const std::string MISSILE_SPRITE_NAME = "missile_1";
 static std::vector<std::string> asteroidNames = {"big_rock", "medium_rock", "small_rock"};
 
 static constexpr float POWER_UP_LIFE_TIME = 5.f;
-static constexpr float POWER_UP_SPEED = 5.0f;
+static constexpr float POWER_UP_SPEED = 5.f;
 
-static constexpr float SCREEN_SHAKE_POWER = 10.0f;
+static constexpr float SCREEN_SHAKE_POWER = 5.f;
 static constexpr float SCREEN_SHAKE_TIME = 0.3f;
 
 AsteroidsScene::AsteroidsScene()
@@ -123,6 +123,11 @@ void AsteroidsScene::Update(uint32_t dt)
 
 void AsteroidsScene::Draw(Core::Window& window)
 {
+    Core::Sprite bgSprite;
+    bgSprite.width = m_BGImage.GetWidth();
+    bgSprite.height = m_BGImage.GetHeight();
+    Core::Application::Get().GetWindow().DrawBackground(m_BGImage, bgSprite, Core::Vec2D::Zero);
+
     if (m_GameState != AsteroidsGameState::LevelStarting)
     {
         m_Ship.Draw(window);

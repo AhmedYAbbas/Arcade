@@ -41,8 +41,7 @@ namespace Core
 			if (m_ScreenShakeTimer <= 0)
 				m_ScreenShakeTimer = 0;
 
-			//Section 2 - Exercise 1
-			//TODO: implement
+			m_ScreenShakeOffset = Core::Vec2D(m_ScreenShakePower * std::cosf(m_ScreenShakeTimer), m_ScreenShakePower * std::sinf(m_ScreenShakeTimer));
 		}
 		else
 			m_ScreenShakeOffset = Vec2D::Zero;
@@ -73,7 +72,7 @@ namespace Core
 					SDL_Surface* surface = m_BackgroundBuffer.GetSurface();
 					memcpy(textureData, surface->pixels, static_cast<size_t>(surface->w) * static_cast<size_t>(surface->h) * static_cast<size_t>(m_PixelFormat->BytesPerPixel));
 					SDL_UnlockTexture(m_BackgroundTexture);
-					SDL_RenderCopy(m_Renderer, m_BackgroundTexture, nullptr, nullptr);
+					SDL_RenderCopy(m_Renderer, m_BackgroundTexture, nullptr, &destRect);
 				}
 
 				if (SDL_LockTexture(m_Texture, nullptr, (void**)&textureData, &texturePitch) >= 0)
@@ -81,7 +80,7 @@ namespace Core
 					SDL_Surface* surface = m_BackBuffer.GetSurface();
 					memcpy(textureData, surface->pixels, static_cast<size_t>(surface->w) * static_cast<size_t>(surface->h) * static_cast<size_t>(m_PixelFormat->BytesPerPixel));
 					SDL_UnlockTexture(m_Texture);
-					SDL_RenderCopy(m_Renderer, m_Texture, nullptr, nullptr);
+					SDL_RenderCopy(m_Renderer, m_Texture, nullptr, &destRect);
 				}
 
 				SDL_RenderPresent(m_Renderer);
@@ -91,7 +90,7 @@ namespace Core
 				SDL_BlitScaled(m_BackBuffer.GetSurface(), nullptr, m_Surface, nullptr);
 				SDL_UpdateWindowSurface(m_Window);
 			}
-			m_BackBuffer.Clear();
+			m_BackBuffer.Clear(m_ClearColor);
 		}
 	}
 
@@ -99,18 +98,14 @@ namespace Core
 	{
 		assert(m_Window);
 		if (m_Window)
-		{
 			m_BackBuffer.SetPixel(x, y, color);
-		}
 	}
 
 	void SDLWindow::Draw(const Vec2D& point, const Color& color)
 	{
 		assert(m_Window);
 		if (m_Window)
-		{
 			m_BackBuffer.SetPixel(static_cast<int>(point.GetX()), static_cast<int>(point.GetY()), color);
-		}
 	}
 
 	void SDLWindow::Draw(const Line& line, const Color& color)
@@ -663,9 +658,9 @@ namespace Core
 			m_ClearColor = Color(rClear, gClear, bClear, aClear);
 
 			m_BackBuffer.Init(m_Width, m_Height, m_PixelFormat->format);
-			m_BackBuffer.Clear();
+			m_BackBuffer.Clear(m_ClearColor);
 			m_BackgroundBuffer.Init(m_Width, m_Height, m_PixelFormat->format);
-			m_BackgroundBuffer.Clear();
+			m_BackgroundBuffer.Clear(m_ClearColor);
 		}
 	}
 
