@@ -148,9 +148,6 @@ namespace Ease
 
 	float SmoothStep(float t)
 	{
-		//Section 3 Exercise 1
-		//TODO: implement
-
-		return t;
+		return t < 0.5f ? 2.f * t * t : 1.f - std::powf(-2.f * t + 2.f, 2.f) / 2.f;
 	}
 }
