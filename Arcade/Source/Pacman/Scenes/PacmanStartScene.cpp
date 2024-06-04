@@ -4,7 +4,7 @@
 #include "Scenes/NotImplementedScene.h"
 
 PacmanStartScene::PacmanStartScene()
-	: ButtonOptionsScene({"Play Game", "High Scores"}, Core::Color::Yellow())
+	: ButtonOptionsScene({"Play Game", "High Scores"}, Core::Color::Yellow(), true)
 {
 }
 

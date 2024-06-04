@@ -5,6 +5,7 @@
 #include "Core/Window.h"
 #include "Core/Scene.h"
 #include "Core/Buttton.h"
+#include "Core/AnimatedButton.h"
 
 // -------------Input-------------
 #include "Core/InputAction.h"

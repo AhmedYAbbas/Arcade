@@ -8,7 +8,7 @@
 class ButtonOptionsScene : public Core::Scene
 {
 public:
-	ButtonOptionsScene(const std::vector<std::string>& optionNames, const Core::Color& textColor);
+	ButtonOptionsScene(const std::vector<std::string>& optionNames, const Core::Color& textColor, bool animated);
 
 	void SetButtonActions(const std::vector<Core::Button::ButtonAction>& actions);
 
@@ -23,6 +23,6 @@ private:
 	void ExecuteCurrentButtonAction();
 
 private:
-	std::vector<Core::Button> m_Buttons;
+	std::vector<std::unique_ptr<Core::Button>> m_Buttons;
 	int m_HighlightedOption;
 };

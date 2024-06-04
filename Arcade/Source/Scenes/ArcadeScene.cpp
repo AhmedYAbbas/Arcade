@@ -6,7 +6,7 @@
 #include "Asteroids/Scenes/AsteroidsScene.h"
 
 ArcadeScene::ArcadeScene()
-	: ButtonOptionsScene({"Tetris", "Breakout", "Asteroids", "Pac-Man"}, Core::Color::Cyan())
+	: ButtonOptionsScene({"Tetris", "Breakout", "Asteroids", "Pac-Man"}, Core::Color::Cyan(), true)
 {
 	Init();
 }
@@ -43,6 +43,7 @@ bool ArcadeScene::Init()
 
 void ArcadeScene::Update(uint32_t dt)
 {
+	ButtonOptionsScene::Update(dt);
 }
 
 void ArcadeScene::Draw(Core::Window& window)

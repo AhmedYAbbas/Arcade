@@ -19,17 +19,23 @@ namespace Core
 
 		Button(const BitmapFont& bitmapFont, const Color& textColor, const Color& highlightColor = Color::White());
 
-		void Init(Vec2D topLeft, unsigned int width, unsigned int height);
-		void Draw(Window& window);
-		void ExecuteAction();
+		virtual void Init(const std::string& text, Vec2D topLeft, unsigned int width, unsigned height);
+		virtual void Draw(Window& window);
+		virtual void Update(uint32_t dt) {}
+		virtual void ExecuteAction();
 
 		inline void SetButtonText(const std::string& text) { m_Title = text; }
 		inline const std::string& GetButtonText() const { return m_Title; }
-		inline void SetHighlighted(bool highlighted) { m_Highlighted = highlighted; }
+		inline virtual void SetHighlighted(bool highlighted) { m_Highlighted = highlighted; }
 		inline bool IsHighlighted() const { return m_Highlighted; }
 		inline void SetButtonAction(ButtonAction action) { m_Action = action; }
 
-	private:
+	protected:
+		void DrawHighlight(Core::Window& window);
+
+	protected:
+		Core::Vec2D m_DrawPosition;
+		float m_TextScale;
 		const BitmapFont& m_BitmapFont;
 		std::string m_Title;
 		Rectangle m_BoundingBox;

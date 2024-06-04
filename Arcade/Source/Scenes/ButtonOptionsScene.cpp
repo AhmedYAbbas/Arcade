@@ -1,24 +1,30 @@
 #include "ArcadePCH.h"
 #include "ButtonOptionsScene.h"
 
-ButtonOptionsScene::ButtonOptionsScene(const std::vector<std::string>& optionNames, const Core::Color& textColor)
+ButtonOptionsScene::ButtonOptionsScene(const std::vector<std::string>& optionNames, const Core::Color& textColor, bool animated)
 	: m_HighlightedOption(0)
 {
 	const Core::BitmapFont& font = Core::Application::Get().GetFont();
 	for (size_t i = 0; i < optionNames.size(); ++i)
 	{
-		m_Buttons.push_back(Core::Button(font, textColor));
-		m_Buttons.back().SetButtonText(optionNames[i]);
+		std::unique_ptr<Core::Button> newButton;
+		if (animated)
+			newButton = std::make_unique<Core::AnimatedButton>(font, textColor);
+		else
+			newButton = std::make_unique<Core::Button>(font, textColor);
+
+		m_Buttons.push_back(std::move(newButton));
+		m_Buttons.back()->SetButtonText(optionNames[i]);
 	}
 
 	if (!optionNames.empty())
-		m_Buttons[m_HighlightedOption].SetHighlighted(true);
+		m_Buttons[m_HighlightedOption]->SetHighlighted(true);
 }
 
 void ButtonOptionsScene::SetButtonActions(const std::vector<Core::Button::ButtonAction>& actions)
 {
 	for (size_t i = 0; i < m_Buttons.size(); ++i)
-		m_Buttons[i].SetButtonAction(actions[i]);
+		m_Buttons[i]->SetButtonAction(actions[i]);
 }
 
 bool ButtonOptionsScene::Init()
@@ -54,14 +60,14 @@ bool ButtonOptionsScene::Init()
 	uint32_t width = Core::Application::Get().GetWindow().GetWidth();
 
 	const Core::BitmapFont& font = Core::Application::Get().GetFont();
-	Core::Size fontSize = font.GetSizeOf(m_Buttons[0].GetButtonText());
+	Core::Size fontSize = font.GetSizeOf(m_Buttons[0]->GetButtonText());
 	const int BUTTON_PAD = 10;
 	unsigned int buttonHeight = fontSize.Height + BUTTON_PAD * 2;
 	uint32_t maxButtonWidth = fontSize.Width;
 
 	for (const auto& button : m_Buttons)
 	{
-		Core::Size s = font.GetSizeOf(button.GetButtonText());
+		Core::Size s = font.GetSizeOf(button->GetButtonText());
 		if (s.Width > maxButtonWidth)
 			maxButtonWidth = s.Width;
 	}
@@ -71,22 +77,24 @@ bool ButtonOptionsScene::Init()
 
 	for (auto& button : m_Buttons)
 	{
-		button.Init(Core::Vec2D(width / 2 - maxButtonWidth / 2, yOffset), maxButtonWidth, buttonHeight);
+		button->Init(button->GetButtonText(), Core::Vec2D(width / 2 - maxButtonWidth / 2, yOffset), maxButtonWidth, buttonHeight);
 		yOffset += buttonHeight + Y_PAD;
 	}
-	m_Buttons[m_HighlightedOption].SetHighlighted(true);
+	m_Buttons[m_HighlightedOption]->SetHighlighted(true);
 
 	return true;
 }
 
 void ButtonOptionsScene::Update(uint32_t dt)
 {
+	for (size_t i = 0; i < m_Buttons.size(); ++i)
+		m_Buttons[i]->Update(dt);
 }
 
 void ButtonOptionsScene::Draw(Core::Window& window)
 {
 	for (auto& button : m_Buttons)
-		button.Draw(window);
+		button->Draw(window);
 }
 
 void ButtonOptionsScene::SetNextButtonHighlighted()
@@ -108,12 +116,12 @@ void ButtonOptionsScene::SetPreviousButtonHighlighted()
 void ButtonOptionsScene::HighlightCurrentButton()
 {
 	for (auto& button : m_Buttons)
-		button.SetHighlighted(false);
+		button->SetHighlighted(false);
 
-	m_Buttons[m_HighlightedOption].SetHighlighted(true);
+	m_Buttons[m_HighlightedOption]->SetHighlighted(true);
 }
 
 void ButtonOptionsScene::ExecuteCurrentButtonAction()
 {
-	m_Buttons[m_HighlightedOption].ExecuteAction();
+	m_Buttons[m_HighlightedOption]->ExecuteAction();
 }
