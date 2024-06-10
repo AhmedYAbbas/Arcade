@@ -8,7 +8,6 @@
 ArcadeScene::ArcadeScene()
 	: ButtonOptionsScene({"Tetris", "Breakout", "Asteroids", "Pac-Man"}, Core::Color::Cyan(), true)
 {
-	Init();
 }
 
 bool ArcadeScene::Init()

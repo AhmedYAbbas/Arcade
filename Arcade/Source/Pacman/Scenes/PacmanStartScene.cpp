@@ -36,6 +36,7 @@ bool PacmanStartScene::Init()
 
 void PacmanStartScene::Update(uint32_t dt)
 {
+	ButtonOptionsScene::Update(dt);
 }
 
 void PacmanStartScene::Draw(Core::Window& window)

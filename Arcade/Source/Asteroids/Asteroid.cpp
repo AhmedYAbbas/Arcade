@@ -14,7 +14,8 @@ Asteroid::Asteroid()
 	m_Split(false),
 	m_SplitPoint1(Core::Vec2D::Zero),
 	m_SplitPoint2(Core::Vec2D::Zero),
-	m_SplitTime(0)
+	m_SplitTime(0),
+	m_RotationAtSplit(0)
 {
 }
 
@@ -133,7 +134,6 @@ void Asteroid::DrawDebug(Core::Window& window)
 
 void Asteroid::DrawAsteroidSplit(Core::Window& window, float alpha)
 {
-	//Section 4 - Exercise 1
 	//TODO: implement
 
 	/*
@@ -145,40 +145,36 @@ void Asteroid::DrawAsteroidSplit(Core::Window& window, float alpha)
 
 	*/
 
-	/*
-	You can draw like this:
+	//Core::DrawTransform transform;
+	//transform.Pos = ; //? - one side of the asteroid
+	//transform.RotationAngle = m_RotationAtSplit;
+	//transform.Scale = 1.f;
 
-	DrawTransform transform;
-	transform.pos = //? - one side of the asteroid
-	transform.rotationAngle = mRotationAtSplit;
-	transform.scale = 1.0f;
+	//Core::Vec2D xAxis;
+	//Core::Vec2D yAxis;
 
-	ColorParams colorParams;
-	colorParams.bilinearFiltering = BILINEAR_FILTERING;
-	colorParams.overlay = Color::White();
-	colorParams.alpha = alpha;
+	//float invXAxisLengthSq;
+	//float invYAxisLengthSq;
 
-	UVParams uvParams;
-	uvParams.mSplitPoint1 = //?
-	uvParams.mSplitPoint2 = //?
-	uvParams.mOrientation = INSIDE
+	//std::vector<Core::Vec2D> points;
 
-	theScreen.Draw(
-		*mSprite.GetSpriteSheet(),
-		mSpriteName,
-		transform,
-		colorParams,
-		uvParams);
+	//const auto& sprite = m_Sprite.GetSpriteSheet()->GetSprite(m_SpriteName);
+	//Core::GetObjectAxis(transform.Pos, sprite.width, sprite.height, transform.RotationAngle, transform.Scale, xAxis, yAxis, invXAxisLengthSq, invYAxisLengthSq, points);
 
-	transform.pos = //? - other side of the asteroid
-	uvParams.mOrientation = OUTSIDE;
+	//Core::ColorParams colorParams;
+	//colorParams.BilinearFiltering = BILINEAR_FILTERING;
+	//colorParams.Overlay = Core::Color::White();
+	//colorParams.Alpha = alpha;
 
-	theScreen.Draw(
-		*mSprite.GetSpriteSheet(),
-		mSpriteName,
-		transform,
-		colorParams,
-		uvParams);
+	//Core::UVParams uvParams;
+	//uvParams.SplitPoint1 = Core::ConvertWorldSpaceToUVSpace(m_SplitPoint1, points[0], xAxis, yAxis, invXAxisLengthSq, invYAxisLengthSq);
+	//uvParams.SplitPoint2 = Core::ConvertWorldSpaceToUVSpace(m_SplitPoint2, points[0], xAxis, yAxis, invXAxisLengthSq, invYAxisLengthSq);
+	//uvParams.Orientation = Core::UVOrientation::Inside;
 
-	*/
+	//window.Draw(*m_Sprite.GetSpriteSheet(), m_SpriteName, transform, colorParams, uvParams);
+
+	//transform.Pos = ;//? - other side of the asteroid
+	//uvParams.Orientation = Core::UVOrientation::Outside;
+
+	//window.Draw(*m_Sprite.GetSpriteSheet(), m_SpriteName, transform, colorParams, uvParams);
 }

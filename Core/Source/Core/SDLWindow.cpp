@@ -272,8 +272,8 @@ namespace Core
 		colorParams.Alpha = 1.f;
 		colorParams.Gradient.XParam = GradientXParam::NoXGradient;
 		colorParams.Gradient.YParam = GradientYParam::NoYGradient;
-		//	colorParams.gradient.color1 = Color::White();
-		//	colorParams.gradient.color2 = Color::Blue();
+		//	colorParams.Gradient.Color1 = Color::White();
+		//	colorParams.Gradient.Color2 = Color::Blue();
 
 		colorParams.BilinearFiltering = false;
 		colorParams.Overlay = overlayColor;
@@ -572,10 +572,22 @@ namespace Core
 		Color xOverlay = Color::White();
 		Color yOverlay = Color::White();
 
-		//Section 3 - EXERCISE 2
-		{
+		if (gradient.XParam == GradientXParam::LeftToRight)
+			xOverlay = Color::Lerp(gradient.Color1, gradient.Color2, u);
+		else if (gradient.XParam == GradientXParam::RightToLeft)
+			xOverlay = Color::Lerp(gradient.Color2, gradient.Color1, u);
 
-		}
+		if (gradient.YParam == GradientYParam::BottomToTop)
+			yOverlay = Color::Lerp(gradient.Color2, gradient.Color1, v);
+		else if (gradient.YParam == GradientYParam::TopToBottom)
+			yOverlay = Color::Lerp(gradient.Color1, gradient.Color2, v);
+
+		if (xOverlay == Color::White())
+			gradientOverlayColor = yOverlay;
+		else if (yOverlay == Color::White())
+			gradientOverlayColor = xOverlay;
+		else
+			gradientOverlayColor = Color::Lerp(xOverlay, yOverlay, 0.5f);
 
 		overlayColor[0] = static_cast<float>(gradientOverlayColor.GetRed()) / 255.f;
 		overlayColor[1] = static_cast<float>(gradientOverlayColor.GetGreen()) / 255.f;
@@ -585,13 +597,12 @@ namespace Core
 
 	void SDLWindow::ClipUV(const Vec2D& uv, const UVParams& uvParams, Color& imageColor)
 	{
-		//Section 4 - Exercise 1
 		//TODO: implement
 
-		//if(we shouldn't draw this part of the texture)
-		//{
-		//	imageColor = Color::ClearBlack();
-		//}
+		/*if()
+		{
+			imageColor = Color::ClearBlack();
+		}*/
 	}
 
 	void SDLWindow::Init(const WindowProps& props, bool fast)

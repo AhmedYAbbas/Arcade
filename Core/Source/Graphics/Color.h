@@ -15,6 +15,7 @@ namespace Core
 		static Color EvaluateOneMinusSourceAlpha(const Color& source, const Color& destination);
 
 		static Color Black() 	{ return {0, 0, 0, 255}; }
+		static Color ClearBlack() { return {0, 0, 0, 0}; }
 		static Color White() 	{ return {255, 255, 255, 255}; }
 		static Color Blue() 	{ return {0, 0, 255, 255}; }
 		static Color Red() 		{ return {255, 0, 0, 255}; }

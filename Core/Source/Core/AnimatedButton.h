@@ -40,6 +40,6 @@ namespace Core
 			Vec2D DrawPosition;
 		};
 
-		std::vector<LetterAnimationData> m_LetterAnimation;
+		std::vector<LetterAnimationData> m_LetterAnimations;
 	};
 }

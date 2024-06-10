@@ -1,11 +1,12 @@
 #include "CorePCH.h"
 #include "AnimatedButton.h"
 #include "Window.h"
+#include "Application.h"
 
 namespace Core
 {
 	constexpr int TOTAL_ANIMATION_TIME = 1000;
-	constexpr bool BOUNCE_FULL_TEXT = true; //Section 3 - Exercise 3 - set to false
+	constexpr bool BOUNCE_FULL_TEXT = false;
 
 	AnimatedButton::AnimatedButton(const BitmapFont& bitmapFont, const Color& textColor, const Color& highlightColor)
 		: Button(bitmapFont, textColor, highlightColor), m_OriginalColor(textColor), m_TotalAnimationTime(TOTAL_ANIMATION_TIME), m_AnimationTime(0), m_IsAnimating(false), m_ExecuteTriggered(false)
@@ -35,6 +36,9 @@ namespace Core
 
 		m_DrawPosition = m_BitmapFont.GetDrawPosition(m_Title, m_BoundingBox, BitmapFontXAlignment::Center, BitmapFontYAlignment::Center);
 		m_TextColor = m_OriginalColor;
+
+		if (IsHighlighted())
+			m_TextColor = Color::White();
 
 		if (m_IsAnimating && IsHighlighted() && !m_ExecuteTriggered)
 		{
@@ -104,20 +108,35 @@ namespace Core
 
 	void AnimatedButton::SetupLetterAnimationData(const std::string& text)
 	{
-		//Section 3 - Exercise 3 
-		//TODO: implement
-		/*
-		* HINTS:
-			std::string letter(1, text[i]); to make a 1 character string
-			mBitmapFont.GetFontSpacingBetweenLetters() which is the amount of pixels between each letter in our font
-			and mBitmapFont.GetSizeOf(letter) which gives how tall and wide each letter is in our font.
-		*/
+		LetterAnimationData letterAnimData;
+		for (size_t i = 0; i < text.size(); ++i)
+		{
+			letterAnimData.Letter = std::string(1, text[i]);
+			letterAnimData.DrawPosition = m_DrawPosition;
+
+			unsigned int previousLettersWidth = 0;
+			for (int j = i; j > 0; --j)
+			{
+				previousLettersWidth += m_BitmapFont.GetSizeOf(std::string(1, text[j - 1])).Width;
+			}
+			letterAnimData.EndPosition = m_DrawPosition + Vec2D((i * m_BitmapFont.GetFontSpacingBetweenLetters()) + previousLettersWidth, 0);
+
+			letterAnimData.StartPosition = Vec2D(m_BoundingBox.GetTopLeftPoint().GetX(), letterAnimData.EndPosition.GetY());
+
+			float timeForLetterToAnimate = static_cast<float>(TOTAL_ANIMATION_TIME) / static_cast<float>(text.size());
+			letterAnimData.Delay = (text.size() - 1 - i) * timeForLetterToAnimate;// + timeForLetterToAnimate;
+
+			m_LetterAnimations.push_back(letterAnimData);
+		}
 	}
 
 	void AnimatedButton::UpdateLetterAnimationData()
 	{
-		//Section 3 - Exercise 3 
-		//TODO: implement
+		for (auto& letter : m_LetterAnimations)
+		{
+			float clampedT = Clamp(static_cast<float>(m_AnimationTime) / (static_cast<float>(TOTAL_ANIMATION_TIME)), 0.f, 1.f);
+			letter.DrawPosition = Vec2D::Lerp(letter.StartPosition, letter.EndPosition, clampedT, Ease::EaseOutBack);
+		}
 	}
 
 	void AnimatedButton::DrawButtonAnimation(Window& window)
@@ -128,9 +147,8 @@ namespace Core
 		ColorParams colorParams;
 		colorParams.Overlay = m_TextColor;
 
-		//Section 3 - Exercise 2 - Change the xParam and yParam of the gradient to each different combination
-		colorParams.Gradient.XParam = GradientXParam::LeftToRight;
-		colorParams.Gradient.YParam = GradientYParam::BottomToTop;
+		colorParams.Gradient.XParam = GradientXParam::NoXGradient;
+		colorParams.Gradient.YParam = GradientYParam::NoYGradient;
 		colorParams.Gradient.Color1 = Color::Green();
 		colorParams.Gradient.Color2 = Color::Red();
 
@@ -142,8 +160,17 @@ namespace Core
 			window.Draw(m_BitmapFont, m_Title, transform, colorParams, uvParams);
 		else
 		{
-			//Section 3 - Exercise 3 
-			//TODO: implement
+			for (const auto& letterAnimData : m_LetterAnimations)
+			{
+				transform.Pos = letterAnimData.DrawPosition;
+				if (m_AnimationTime >= letterAnimData.Delay)
+				{
+					window.Draw(m_BitmapFont, letterAnimData.Letter, transform, colorParams, uvParams);
+				}
+				//window.Draw(letterAnimData.EndPosition, Color::Magenta());
+				//window.Draw(letterAnimData.StartPosition, Color::Magenta());
+				//window.Draw(Vec2D(104.f, 96.f), Color::Blue());
+			}
 		}
 	}
 }
