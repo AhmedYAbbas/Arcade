@@ -38,8 +38,9 @@ This is a Core/App project architecture. There are two included projects - one c
 Core builds into a static library and is meant to contain common code intended for use in multiple games. Arcade builds into an executable and links the Core static library.
 
 ## Building the Project
-The project uses Premake 5 as the build system. (Windows only support!)
+The project uses Premake 5 as the build system. (Only supports x64 Windows for now!)
 1. Clone the repository.
 2. Navigate to the `Scripts` folder.
 3. Run `Setup-Windows` to set up the Visual Studio solution.
 4. Build and run the solution to start playing!
+5. If you're having performance issues, make sure you're on the `Release` configuration and not the `Debug` configuration.
