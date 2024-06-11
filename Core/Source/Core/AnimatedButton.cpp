@@ -147,10 +147,10 @@ namespace Core
 		ColorParams colorParams;
 		colorParams.Overlay = m_TextColor;
 
-		colorParams.Gradient.XParam = GradientXParam::NoXGradient;
-		colorParams.Gradient.YParam = GradientYParam::NoYGradient;
-		colorParams.Gradient.Color1 = Color::Green();
-		colorParams.Gradient.Color2 = Color::Red();
+		colorParams.Gradient.XParam = GradientXParam::LeftToRight;
+		colorParams.Gradient.YParam = GradientYParam::TopToBottom;
+		colorParams.Gradient.Color1 = Color::Yellow();
+		colorParams.Gradient.Color2 = Color::Blue();
 
 		UVParams uvParams;
 

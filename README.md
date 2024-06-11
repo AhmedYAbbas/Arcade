@@ -2,6 +2,8 @@
 
 Welcome to the Arcade game collection! This project features four classic arcade games: Tetris, Asteroids, Breakout, and Pacman. Whether you’re a fan of retro gaming or just looking for some nostalgic fun, this collection has something for everyone.
 
+Made using SDL2 and C++.
+
 ## Controls
 - Arrow keys for movement and selection.
 - 'A' key for actions.
@@ -28,6 +30,8 @@ Welcome to the Arcade game collection! This project features four classic arcade
 - Letter animations.
 - Color gradients.
 - more...
+
+[![Arcade](https://i9.ytimg.com/vi_webp/lptdxB8ehoU/mq1.webp?sqp=CPzLoLMG-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGEMgTChlMA8%3D&rs=AOn4CLDzEm781OpOeK0Din1fBy5wXhCRtQ&retry=4)](https://youtu.be/lptdxB8ehoU "Arcade")
 
 ## Project Structure
 This is a Core/App project architecture. There are two included projects - one called Core, and one called Arcade(App). Premake is used to generate project files.

@@ -69,7 +69,7 @@ namespace Core
 		std::string Title;
 		uint32_t Width, Height, Magnification;
 
-		WindowProps(const std::string& title = "Arcade", uint32_t width = 224, uint32_t height = 288, uint32_t magnification = 2)
+		WindowProps(const std::string& title = "Arcade", uint32_t width = 224, uint32_t height = 288, uint32_t magnification = 3)
 			: Title(title), Width(width), Height(height), Magnification(magnification)
 		{
 		}
