@@ -39,7 +39,7 @@ Core builds into a static library and is meant to contain common code intended f
 
 ## Building the Project
 The project uses Premake 5 as the build system. (Windows only support!)
-1. Open CMD and type `git clone --recursive https://github.com/AhmedYAbbas/Arcade` to clone the repository. 
+1. Clone the repository.
 2. Navigate to the `Scripts` folder.
 3. Run `Setup-Windows` to set up the Visual Studio solution.
 4. Build and run the solution to start playing!
