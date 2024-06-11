@@ -2,12 +2,6 @@
 
 Welcome to the Arcade game collection! This project features four classic arcade games: Tetris, Asteroids, Breakout, and Pacman. Whether you’re a fan of retro gaming or just looking for some nostalgic fun, this collection has something for everyone.
 
-
-## Controls
-- Arrow keys for movement and selection.
-- 'A' key for actions.
-- 'S' key for cancelling.
-
 ## Controls
 - Arrow keys for movement and selection.
 - 'A' key for actions.
