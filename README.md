@@ -1,14 +1,3 @@
----
-title: 'Arcade'
-date: "2024-06-11"
-cover: 
-    image: Images/arcade.png
-    alt: 'Arcade'
-    caption: 'Arcade'
-tags: ["C++", "SDL2", "Premake"]
-categories: [Programming]
----
-
 # Arcade Game Collection
 
 Welcome to the Arcade game collection! This project features four classic arcade games: Tetris, Asteroids, Breakout, and Pacman. Whether you’re a fan of retro gaming or just looking for some nostalgic fun, this collection has something for everyone.
