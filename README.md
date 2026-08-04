@@ -1,53 +1,53 @@
-# Arcade Game Collection
+# Arcade
 
-Welcome to the Arcade game collection! This project features four classic arcade games: Tetris, Asteroids, Breakout, and Pacman. Whether you’re a fan of retro gaming or just looking for some nostalgic fun, this collection has something for everyone.
+A collection of classic arcade games — Pacman, Breakout, and Asteroids, with Tetris in development — built from scratch in C++ with SDL2.
 
-Made using SDL2 and C++.
+[![Watch the trailer](https://img.youtube.com/vi/pxXukngprM4/hqdefault.jpg)](https://www.youtube.com/embed/pxXukngprM4)
 
-***
+## Games
+
+| Game | Status | Description |
+| --- | --- | --- |
+| **Pacman** | Playable | Multiple levels with the classic maze, super pellets, and ghost AI. |
+| **Breakout** | Playable | Three levels, each with a unique brick layout. |
+| **Asteroids** | Playable | Space combat with power-ups and screen-shake on impact. |
+| **Tetris** | In development | Not yet playable. |
+
+### Engine features
+- Animated sprites, buttons, and letter animations
+- Color gradients
+- Screen shake and other juice effects
 
 ## Project Structure
-This is a Core/App project architecture. There are two included projects - one called Core, and one called Arcade(App). Premake is used to generate project files.
-Core builds into a static library and is meant to contain common code intended for use in multiple games. Arcade builds into an executable and links the Core static library.
-***
-## Building the Project
-The project uses Premake 5 as the build system. (Only supports x64 Windows for now!)
+
+The project follows a Core/App architecture, split into two subprojects generated with [Premake 5](https://premake.github.io/):
+
+- **Core** — a static library with engine code shared across all games (rendering, input, animation, etc.), built from `Core/`.
+- **Arcade** — the game executable, built from `Arcade/`, containing each game's scenes and assets and linking against Core.
+
+Third-party dependencies (SDL2) live under `Core/Vendor/`.
+
+## Building
+
+Requires [Premake 5](https://premake.github.io/) (bundled under `Vendor/Binaries/Premake/`).
+
+### Windows
 1. Clone the repository.
-2. Navigate to the `Scripts` folder.
-3. Run `Setup-Windows` to set up the Visual Studio solution.
-4. Build and run the solution to start playing!
-5. If you're having performance issues, make sure you're on the `Release` configuration and not the `Debug` configuration.
-***
+2. From `Scripts/`, run `Setup-Windows.bat` to generate a Visual Studio 2022 solution.
+3. Open `Arcade.sln` and build the `Arcade` project.
+4. Use the **Release** configuration for the best performance — **Debug** is significantly slower.
+
+### Linux
+1. Clone the repository.
+2. From `Scripts/`, run `Setup-Linux.sh` to generate Makefiles via GNU Make (`gmake2`).
+3. Build with `make` from the repository root (add `config=release_x64` for an optimized build).
 
 ## Controls
-- Arrow keys for movement and selection.
-- 'A' key for actions.
-- 'S' key for cancelling.
-***
+| Key | Action |
+| --- | --- |
+| Arrow keys | Move / navigate menus |
+| `A` | Confirm / action |
+| `S` | Cancel / back |
 
-## Features
-### Tetris
-- Tetris is currently under development and will be added soon.
-
-### Pacman
-- Enjoy multiple levels with all the classic features of the original Pacman game.
-- Collect super pellets, avoid ghosts, and navigate through the maze.
-
-### Breakout
-- Three different levels, each with unique brick shapes.
-- Break the bricks using the paddle and ball.
-
-### Asteroids
-- Blast through space, avoiding asteroids and collecting power-ups.
-- Screen shake effects when hitting asteroids.
-
-## Additional Features
-- Animated sprites and buttons.
-- Letter animations.
-- Color gradients.
-- more...
-
-
-[![Watch the video](https://img.youtube.com/vi/pxXukngprM4/hqdefault.jpg)](https://www.youtube.com/embed/pxXukngprM4)
-
-***
+## License
+Released into the public domain under [The Unlicense](UNLICENSE.txt).
